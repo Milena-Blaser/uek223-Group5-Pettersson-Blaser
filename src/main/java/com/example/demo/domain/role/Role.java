@@ -31,6 +31,7 @@ public class Role {
     private List<Authority> authorities;
 
 
+
     public String toString() {
         return getName();
     }

@@ -1,9 +1,13 @@
 package com.example.demo.domain.appUser;
 
+import com.example.demo.domain.ListEntry.ListEntry;
 import com.example.demo.domain.role.Role;
 import lombok.*;
 
 import javax.persistence.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,6 +33,7 @@ public class User {
                     name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 
-
+    @OneToMany(mappedBy = "user")
+    private List<ListEntry> myEntryList;
 
 }
