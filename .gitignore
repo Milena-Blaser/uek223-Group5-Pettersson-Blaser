@@ -23,5 +23,9 @@
 hs_err_pid*
 
 
-/spring skeleton/build/
-/spring skeleton/.gradle/
+.gitignore
+build/
+/build/
+!/.idea/
+!/gradle/
+/.gradle/

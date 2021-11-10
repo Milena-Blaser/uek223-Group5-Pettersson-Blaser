@@ -14,9 +14,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 
 @Component
@@ -36,15 +34,27 @@ class AppStartupRunner implements ApplicationRunner {
 //        e.g. to add a user or role to the DB (only for testing)
 
 //        Authorities
-        Authority read_auth=new Authority(null,"READ");
-        authorityRepository.save(read_auth);
+        List<Authority> allAuthorities = new ArrayList<>();
+        Authority readListEntryAuth = new Authority(null,"READ_LIST_ENTRY");
+        Authority createListEntryAuth = new Authority(null, "CREATE_LIST_ENTRY");
+        Authority updateListEntryAuth = new Authority(null, "UPDATE_LIST_ENTRY");
+        Authority deleteListEntryAuth = new Authority(null, "DELETE_LIST_ENTRY");
+        allAuthorities.add(readListEntryAuth);
+        allAuthorities.add(createListEntryAuth);
+        allAuthorities.add(updateListEntryAuth);
+        allAuthorities.add(deleteListEntryAuth);
+        authorityRepository.saveAll(allAuthorities);
 
 //        Roles
-        Role default_role = new Role(null, "DEFAULT",Arrays.asList(read_auth));
-        roleRepository.save(default_role);
+        Role adminRole = new Role(null, "ADMIN", allAuthorities);
+        Role userRole = new Role(null, "USER", List.of(readListEntryAuth));
+        roleRepository.save(adminRole);
+        roleRepository.save(userRole);
 
-        userService.saveUser(new User(null, "james","james.bond@mi6.com","bond", Set.of(default_role)));
-        userService.addRoleToUser("james", "DEFAULT");
+        userService.saveUser(new User(null, "james","james.bond@mi6.com","bond", Set.of(userRole)));
+        userService.saveUser(new User(null, "admin", "admin@mail.ch", "adm1n!", Set.of(adminRole)));
+        userService.addRoleToUser("james", "USER");
+        userService.addRoleToUser("admin", "ADMIN");
     }
 }
 
