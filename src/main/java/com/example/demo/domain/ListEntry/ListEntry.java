@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity(name = "listEntry")
+@Entity(name = "list_entry")
 @Table
 public class ListEntry {
     @Id
@@ -19,7 +19,7 @@ public class ListEntry {
     @Column(name = "text")
     private String text;
 
-    @Column(name = "creationDate")
+    @Column(name = "creation_date")
     private Date creationDate;
 
     @Column(name = "importance")
