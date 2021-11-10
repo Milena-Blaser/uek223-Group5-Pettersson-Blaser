@@ -1,4 +1,5 @@
 package com.example.demo;
+import com.example.demo.domain.ListEntry.ListEntry;
 import com.example.demo.domain.appUser.User;
 import com.example.demo.domain.appUser.UserService;
 import com.example.demo.domain.authority.Authority;
@@ -14,6 +15,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
@@ -38,12 +40,13 @@ class AppStartupRunner implements ApplicationRunner {
 //        Authorities
         Authority read_auth=new Authority(null,"READ");
         authorityRepository.save(read_auth);
+        ListEntry myEntry = new ListEntry();
 
 //        Roles
         Role default_role = new Role(null, "DEFAULT",Arrays.asList(read_auth));
         roleRepository.save(default_role);
 
-        userService.saveUser(new User(null, "james","james.bond@mi6.com","bond", Set.of(default_role)));
+        userService.saveUser(new User(null, "james","james.bond@mi6.com","bond", Set.of(default_role), Arrays.asList(myEntry)));
         userService.addRoleToUser("james", "DEFAULT");
     }
 }
