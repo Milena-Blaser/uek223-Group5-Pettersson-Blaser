@@ -1,5 +1,6 @@
 package com.example.demo;
 import com.example.demo.domain.ListEntry.ListEntry;
+import com.example.demo.domain.ListEntry.ListEntryRepository;
 import com.example.demo.domain.appUser.User;
 import com.example.demo.domain.appUser.UserService;
 import com.example.demo.domain.authority.Authority;
@@ -28,6 +29,8 @@ class AppStartupRunner implements ApplicationRunner {
     private final RoleRepository roleRepository;
     @Autowired
     private final AuthorityRepository authorityRepository;
+    @Autowired
+    private final ListEntryRepository listEntryRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -46,26 +49,20 @@ class AppStartupRunner implements ApplicationRunner {
         allAuthorities.add(deleteListEntryAuth);
         authorityRepository.saveAll(allAuthorities);
 
+//        List Entries
+        ListEntry jamesEntry = new ListEntry();
+
 //        Roles
         Role adminRole = new Role(null, "ADMIN", allAuthorities);
         Role userRole = new Role(null, "USER", List.of(readListEntryAuth));
         roleRepository.save(adminRole);
         roleRepository.save(userRole);
 
-        userService.saveUser(new User(null, "james","james.bond@mi6.com","bond", Set.of(userRole)));
-        userService.saveUser(new User(null, "admin", "admin@mail.ch", "adm1n!", Set.of(adminRole)));
+        userService.saveUser(new User(null, "james","james.bond@mi6.com","bond", Set.of(userRole), Arrays.asList(jamesEntry)));
+        userService.saveUser(new User(null, "admin", "admin@mail.ch", "adm1n!", Set.of(adminRole), List.of()));
         userService.addRoleToUser("james", "USER");
         userService.addRoleToUser("admin", "ADMIN");
-        Authority read_auth=new Authority(null,"READ");
-        authorityRepository.save(read_auth);
-        ListEntry myEntry = new ListEntry();
 
-//        Roles
-        Role default_role = new Role(null, "DEFAULT",Arrays.asList(read_auth));
-        roleRepository.save(default_role);
-
-        userService.saveUser(new User(null, "james","james.bond@mi6.com","bond", Set.of(default_role), Arrays.asList(myEntry)));
-        userService.addRoleToUser("james", "DEFAULT");
     }
 }
 
