@@ -36,4 +36,5 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<ListEntry> myEntryList;
 
+
 }
