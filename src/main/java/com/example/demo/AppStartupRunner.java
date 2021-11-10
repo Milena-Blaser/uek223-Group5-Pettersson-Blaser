@@ -40,7 +40,7 @@ class AppStartupRunner implements ApplicationRunner {
 //        Authorities
         Authority read_auth=new Authority(null,"READ");
         authorityRepository.save(read_auth);
-        ListEntry myEntry = new ListEntry();
+        ListEntry myEntry = null;
 
 //        Roles
         Role default_role = new Role(null, "DEFAULT",Arrays.asList(read_auth));
