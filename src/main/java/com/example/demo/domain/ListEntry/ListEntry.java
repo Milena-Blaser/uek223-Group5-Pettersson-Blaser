@@ -1,6 +1,10 @@
 package com.example.demo.domain.ListEntry;
 
 import com.example.demo.domain.appUser.User;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,6 +12,8 @@ import java.util.UUID;
 
 @Entity(name = "list_entry")
 @Table
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 public class ListEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,60 +36,4 @@ public class ListEntry {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-
-    public ListEntry(String title, String text, Date creationDate, Importance importance, User user) {
-        this.title = title;
-        this.text = text;
-        this.creationDate = creationDate;
-        this.importance = importance;
-        this.user = user;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public Importance getImportance() {
-        return importance;
-    }
-
-    public void setImportance(Importance importance) {
-        this.importance = importance;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }
