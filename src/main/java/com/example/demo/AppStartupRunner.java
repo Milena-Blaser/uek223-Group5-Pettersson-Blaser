@@ -1,4 +1,5 @@
 package com.example.demo;
+import com.example.demo.domain.ListEntry.ListEntry;
 import com.example.demo.domain.appUser.User;
 import com.example.demo.domain.appUser.UserService;
 import com.example.demo.domain.authority.Authority;
@@ -55,6 +56,16 @@ class AppStartupRunner implements ApplicationRunner {
         userService.saveUser(new User(null, "admin", "admin@mail.ch", "adm1n!", Set.of(adminRole)));
         userService.addRoleToUser("james", "USER");
         userService.addRoleToUser("admin", "ADMIN");
+        Authority read_auth=new Authority(null,"READ");
+        authorityRepository.save(read_auth);
+        ListEntry myEntry = new ListEntry();
+
+//        Roles
+        Role default_role = new Role(null, "DEFAULT",Arrays.asList(read_auth));
+        roleRepository.save(default_role);
+
+        userService.saveUser(new User(null, "james","james.bond@mi6.com","bond", Set.of(default_role), Arrays.asList(myEntry)));
+        userService.addRoleToUser("james", "DEFAULT");
     }
 }
 
