@@ -29,4 +29,8 @@ public class ListEntryServiceImpl implements ListEntryService {
         return listEntryRepository.save(new ListEntry(null,listEntry.getTitle(),listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()),listEntry.getImportance().getNumVal(),user));
     }
 
+    @Override
+    public ListEntry getListEntry(UUID id) {
+        return listEntryRepository.getById(id);
+    }
 }

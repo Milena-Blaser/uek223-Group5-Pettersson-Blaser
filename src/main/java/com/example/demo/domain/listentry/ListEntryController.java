@@ -3,16 +3,14 @@ package com.example.demo.domain.listentry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.example.demo.domain.listentry.dto.ListEntryDTO;
 
 import javax.management.InstanceNotFoundException;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/list")
+@RequestMapping("/list/")
 public class ListEntryController {
 
     private ListEntryServiceImpl listEntryService;
@@ -22,7 +20,7 @@ public class ListEntryController {
         this.listEntryService = listEntryService;
     }
 
-    @PostMapping("/add")
+    @PostMapping("add")
     @PreAuthorize("hasAuthority('CREATE_LIST_ENTRY')")
     public ResponseEntity<ListEntry> addListEntry(@RequestBody ListEntryDTO listEntry){
         ListEntry returnedListEntry = null;
@@ -32,5 +30,10 @@ public class ListEntryController {
             return  ResponseEntity.status(404).body(null);
         }
         return ResponseEntity.ok().body(returnedListEntry);
+    }
+    @GetMapping("get/{id}")
+    @PreAuthorize("hasAuthority('READ_LIST_ENTRY')")
+    public ResponseEntity<ListEntry> getListEntry(@PathVariable("id") UUID id){
+        return ResponseEntity.ok().body(listEntryService.getListEntry(id));
     }
 }
