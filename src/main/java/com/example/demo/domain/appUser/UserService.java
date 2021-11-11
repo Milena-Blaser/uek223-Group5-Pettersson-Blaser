@@ -12,6 +12,7 @@ import java.util.UUID;
 public interface UserService {
     User saveUser(User user) throws InstanceAlreadyExistsException;
     Role saveRole(Role role);
+    User updateUser(User user) throws InstanceNotFoundException;
     void addRoleToUser(String username, String rolename);
     User getUser(String username);
     Optional<User> findById(UUID id) throws InstanceNotFoundException;
