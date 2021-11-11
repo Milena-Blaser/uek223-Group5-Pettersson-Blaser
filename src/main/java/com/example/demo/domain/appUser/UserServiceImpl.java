@@ -72,6 +72,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public User updateUser(User user) throws InstanceNotFoundException{
+        if (userRepository.findByUsername(user.getUsername()) == null){
+            throw new InstanceNotFoundException("User doesn't exist");
+        }
+        else {
+            return userRepository.save(user);
+        }
+    }
+
+    @Override
     public Role saveRole(Role role) {
         return roleRepository.save(role);
     }
