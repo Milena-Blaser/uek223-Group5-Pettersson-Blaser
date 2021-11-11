@@ -1,6 +1,10 @@
 package com.example.demo.domain.ListEntry;
 
 import com.example.demo.domain.appUser.User;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,8 +12,11 @@ import java.util.UUID;
 
 @Entity(name = "list_entry")
 @Table
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 public class ListEntry {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private UUID id;
 
@@ -28,9 +35,5 @@ public class ListEntry {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-
-
-
-
 
 }

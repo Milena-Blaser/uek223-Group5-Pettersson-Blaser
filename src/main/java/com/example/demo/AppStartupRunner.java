@@ -49,16 +49,13 @@ class AppStartupRunner implements ApplicationRunner {
         allAuthorities.add(deleteListEntryAuth);
         authorityRepository.saveAll(allAuthorities);
 
-//        List Entries
-        ListEntry jamesEntry = new ListEntry();
-
 //        Roles
         Role adminRole = new Role(null, "ADMIN", allAuthorities);
         Role userRole = new Role(null, "USER", List.of(readListEntryAuth));
         roleRepository.save(adminRole);
         roleRepository.save(userRole);
 
-        userService.saveUser(new User(null, "james","james.bond@mi6.com","bond", Set.of(userRole), Arrays.asList(jamesEntry)));
+        userService.saveUser(new User(null, "james","james.bond@mi6.com","bond", Set.of(userRole), Arrays.asList()));
         userService.saveUser(new User(null, "admin", "admin@mail.ch", "adm1n!", Set.of(adminRole), List.of()));
         userService.addRoleToUser("james", "USER");
         userService.addRoleToUser("admin", "ADMIN");
