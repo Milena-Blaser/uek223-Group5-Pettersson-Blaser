@@ -28,9 +28,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().and()
                 .authorizeRequests()
-                .antMatchers("/**").hasAuthority("READ")
+                .antMatchers("/swagger-ui").hasRole("ADMIN")
                 .and()
-                // some more method calls
+                .authorizeRequests()
+                .antMatchers("/**").hasAuthority("READ_LIST_ENTRY")
+                .and()
                 .formLogin();
     }
  }
