@@ -1,19 +1,20 @@
-package com.example.demo.domain.ListEntry;
+package com.example.demo.domain.listentry;
 
 import com.example.demo.domain.appUser.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity(name = "list_entry")
 @Table
 @Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 public class ListEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,13 +28,23 @@ public class ListEntry {
     private String text;
 
     @Column(name = "creation_date")
-    private Date creationDate;
+    private LocalDate creationDate;
 
     @Column(name = "importance")
-    private Importance importance;
+    private int importance;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+
+    public ListEntry(UUID id, String title, String text, LocalDate creationDate, int importance, User user) {
+        this.id = id;
+        this.title = title;
+        this.text = text;
+        this.creationDate = creationDate;
+        this.importance = importance;
+        this.user = user;
+    }
 
 }
