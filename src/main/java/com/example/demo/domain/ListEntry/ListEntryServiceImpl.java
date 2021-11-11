@@ -6,16 +6,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ListEntryServiceImpl implements ListEntryService {
 
-    @Autowired
     private final ListEntryRepository listEntryRepository;
 
+    @Autowired
     public ListEntryServiceImpl(ListEntryRepository listEntryRepository) {
         this.listEntryRepository = listEntryRepository;
     }
-    
+
     @Override
     public ListEntry addListEntry(ListEntry listEntry) {
-      return listEntryRepository.save(listEntry);
+        return listEntryRepository.save(listEntry);
     }
 
 }
