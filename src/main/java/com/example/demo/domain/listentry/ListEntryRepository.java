@@ -1,4 +1,4 @@
-package com.example.demo.domain.ListEntry;
+package com.example.demo.domain.listentry;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -7,4 +7,5 @@ import java.util.UUID;
 
 @Repository
 public interface ListEntryRepository extends JpaRepository<ListEntry, UUID> {
+
 }
