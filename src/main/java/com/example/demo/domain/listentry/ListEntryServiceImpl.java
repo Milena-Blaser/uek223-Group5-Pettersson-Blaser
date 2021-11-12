@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
@@ -81,26 +78,26 @@ public class ListEntryServiceImpl implements ListEntryService {
     }
 
     @Override
-    public ListEntryDTOForOutput getListEntry(UUID id) throws InstanceNotFoundException {
+    public ListEntryDTOForOutput getListEntry(UUID id, String username) throws InstanceNotFoundException {
         Optional<ListEntry> optionalListEntry;
+
         if((optionalListEntry = listEntryRepository.findById(id)).isEmpty()) {
             throw new InstanceNotFoundException("Element does not exist");
         }
         ListEntry listEntry = optionalListEntry.get();
+
         return  new ListEntryDTOForOutput(listEntry.getTitle(),listEntry.getText(),listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
     }
     @Override
-    public Collection<ListEntry> getAllListEntries(String username){
-
-        UUID user = userService.getUser(username).getId();
-        Collection<ListEntry> listEntries = listEntryRepository.findByUserID(user);
-        //Collection<ListEntryDTOForOutput> listEntryDTOForOutputs = null;
-        /*for(int i = 0; i < listEntries.size(); i++){
-            ListEntry listEntry = listEntries.;
+    public List<ListEntryDTOForOutput> getAllListEntries(UUID id){
+        List<ListEntry> listEntries = listEntryRepository.findByUserID(id);
+        List<ListEntryDTOForOutput> listEntryDTOForOutputs = new ArrayList<>();
+        for(int i = 0; i < listEntries.size(); i++) {
+            ListEntry listEntry = listEntries.get(i);
             ListEntryDTOForOutput listEntryDTOForOutput = new ListEntryDTOForOutput(listEntry.getTitle(), listEntry.getText(), listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
-            l7istEntryDTOForOutputs.add(listEntryDTOForOutput);
-        }*/
-        return listEntries;
+            listEntryDTOForOutputs.add(listEntryDTOForOutput);
+        }
+        return listEntryDTOForOutputs;
 
     }
 

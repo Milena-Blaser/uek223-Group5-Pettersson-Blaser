@@ -64,11 +64,11 @@ class AppStartupRunner implements ApplicationRunner {
 
 //        List Entries
         ListEntry entry1 = new ListEntry(null, "TITLE OF ENTRY 1", "Description of entry 1",
-                LocalDate.of(2004, 7, 14), Importance.VERY_IMPORTANT.getNumVal(), admin);
+                LocalDate.of(2004, 7, 14), Importance.NOT_IMPORTANT.getNumVal(), admin);
         ListEntry entry2 = new ListEntry(null, "TITLE OF ENTRY 2", "Description of entry 2",
                 LocalDate.of(2008, 8, 16), Importance.IMPORTANT.getNumVal(), admin);
         ListEntry entry3 = new ListEntry(null, "TITLE OF ENTRY 3", "Description of entry 3",
-                LocalDate.of(2012, 9, 18), Importance.LESS_IMPORTANT.getNumVal(), admin);
+                LocalDate.of(2012, 9, 18), Importance.VERY_IMPORTANT.getNumVal(), admin);
         listEntryRepository.saveAll(List.of(entry1, entry2, entry3));
         //admin.setMyEntryList(List.of(entry1, entry2, entry3));
         //userService.updateUser(admin);

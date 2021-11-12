@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Repository
 public interface ListEntryRepository extends JpaRepository<ListEntry, UUID> {
-    @Query(value = "select * from list_entry  where list_entry.user_id = :id", nativeQuery = true)
+    @Query(value = "select * from list_entry  where list_entry.user_id = :id order by list_entry.importance desc", nativeQuery = true)
     List<ListEntry> findByUserID(@Param("id") UUID id);
 
 }

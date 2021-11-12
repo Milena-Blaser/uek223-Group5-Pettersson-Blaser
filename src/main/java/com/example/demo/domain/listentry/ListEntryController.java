@@ -5,6 +5,7 @@ import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateUser;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
 import com.example.demo.exception.NotTheOwnerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -39,24 +40,24 @@ public class ListEntryController {
         }
         return ResponseEntity.ok().body(returnedListEntry);
     }
-
-    @GetMapping("get/{id}")
+    @GetMapping("{userID}")
     @PreAuthorize("hasAuthority('READ_LIST_ENTRY')")
-    public ResponseEntity getListEntry(@PathVariable("id") UUID id) {
+    public ResponseEntity getAllListEntries(@PathVariable("userID") UUID id) {
+
+        return ResponseEntity.ok().body(listEntryService.getAllListEntries(id));
+    }
+
+    @GetMapping("get/{listEntryID}")
+    @PreAuthorize("hasAuthority('READ_LIST_ENTRY')")
+    public ResponseEntity getListEntry(@PathVariable("listEntryID") UUID id, @RequestHeader("Authorization") String authHeader) {
+        String[] userCredentials = decodeCredentials(authHeader);
         Optional<ListEntryDTOForOutput> returnedListEntry = null;
         try {
-            returnedListEntry = Optional.ofNullable(listEntryService.getListEntry(id));
+            returnedListEntry = Optional.ofNullable(listEntryService.getListEntry(id, userCredentials[0]));
         } catch (InstanceNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
         return ResponseEntity.ok().body(returnedListEntry);
-    }
-
-    @GetMapping("mylist")
-    @PreAuthorize("hasAuthority('READ_LIST_ENTRY")
-    public ResponseEntity getAllListEntries(@RequestHeader("Authorization") String authHeader) {
-        String[] userCredentials = decodeCredentials(authHeader);
-        return ResponseEntity.ok().body(listEntryService.getAllListEntries(userCredentials[0]));
     }
 
     @PutMapping("update")
@@ -74,7 +75,7 @@ public class ListEntryController {
 
     @PutMapping("admin/update")
     @PreAuthorize("hasAuthority('UPDATE_LIST_ENTRY')")
-    public ResponseEntity updateListEntryAsAdmin (@RequestBody ListEntryDTOForUpdateAdmin inputEntry) {
+    public ResponseEntity updateListEntryAsAdmin(@RequestBody ListEntryDTOForUpdateAdmin inputEntry) {
         try {
             return ResponseEntity.ok(listEntryService.updateListEntryAsAdmin(inputEntry));
         } catch (InstanceNotFoundException e) {

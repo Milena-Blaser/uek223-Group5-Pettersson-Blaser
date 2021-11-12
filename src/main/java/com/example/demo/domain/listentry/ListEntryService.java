@@ -16,8 +16,12 @@ import java.util.UUID;
 
 public interface ListEntryService {
     ListEntry addListEntry(ListEntryDTO listEntry) throws InstanceNotFoundException;
+
     ListEntry updateListEntryAsUser(ListEntryDTOForUpdateUser newListEntry, String loggedInUsername) throws InstanceNotFoundException, NotTheOwnerException;
+
     ListEntry updateListEntryAsAdmin(ListEntryDTOForUpdateAdmin newListEntry) throws InstanceNotFoundException;
-    ListEntryDTOForOutput getListEntry(UUID id) throws InstanceNotFoundException;
-    Collection<ListEntry> getAllListEntries(String username);
+
+    ListEntryDTOForOutput getListEntry(UUID id, String username) throws InstanceNotFoundException;
+
+    List<ListEntryDTOForOutput> getAllListEntries(UUID id);
 }
