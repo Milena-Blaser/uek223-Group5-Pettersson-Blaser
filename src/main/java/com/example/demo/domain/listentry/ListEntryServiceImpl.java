@@ -94,7 +94,7 @@ public class ListEntryServiceImpl implements ListEntryService {
         List<ListEntryDTOForOutput> listEntryDTOForOutputs = new ArrayList<>();
         for(int i = 0; i < listEntries.size(); i++) {
             ListEntry listEntry = listEntries.get(i);
-            ListEntryDTOForOutput listEntryDTOForOutput = new ListEntryDTOForOutput(listEntry.getTitle(), listEntry.getText(), listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
+            ListEntryDTOForOutput listEntryDTOForOutput = new ListEntryDTOForOutput(listEntry);
             listEntryDTOForOutputs.add(listEntryDTOForOutput);
         }
         return listEntryDTOForOutputs;
