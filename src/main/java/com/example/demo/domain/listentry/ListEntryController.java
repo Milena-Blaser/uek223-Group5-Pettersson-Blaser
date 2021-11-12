@@ -55,12 +55,4 @@ public class ListEntryController {
         }
 
     }
-
-    public String[] decodeCredentials(String authorizationHeader) {
-        String base64Credentials = authorizationHeader.substring("Basic".length()).trim();
-        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
-        // format is "username:password"
-        return credentials.split(":", 2);
-    }
 }
