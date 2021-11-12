@@ -82,4 +82,8 @@ public class ListEntryServiceImpl implements ListEntryService {
         return  new ListEntryDTOForOutput(listEntry.getTitle(),listEntry.getText(),listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
     }
 
+    private boolean isOwner(String username, UUID userID) {
+        return userService.getUser(username).getId().equals(userID);
+    }
+
 }
