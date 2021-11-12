@@ -17,4 +17,5 @@ public interface ListEntryService {
     ListEntry updateListEntryAsUser(ListEntryDTOForUpdateUser newListEntry, String loggedInUsername) throws InstanceNotFoundException, NotTheOwnerException;
     ListEntry updateListEntryAsAdmin(ListEntryDTOForUpdateAdmin newListEntry) throws InstanceNotFoundException;
     ListEntryDTOForOutput getListEntry(UUID id) throws InstanceNotFoundException;
+    void deleteListEntry(UUID id, String username) throws InstanceNotFoundException, NotTheOwnerException;
 }

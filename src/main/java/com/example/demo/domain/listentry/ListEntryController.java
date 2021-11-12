@@ -66,7 +66,6 @@ public class ListEntryController {
     }
 
     @PutMapping("admin/update")
-    @PreAuthorize("hasAuthority('UPDATE_LIST_ENTRY')")
     public ResponseEntity updateListEntryAsAdmin (@RequestBody ListEntryDTOForUpdateAdmin inputEntry) {
         try {
             return ResponseEntity.ok(listEntryService.updateListEntryAsAdmin(inputEntry));
@@ -74,6 +73,19 @@ public class ListEntryController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
 
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity deleteListEntry (@PathVariable UUID id,
+                                           @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            listEntryService.deleteListEntry(id, decodeCredentials(authorizationHeader)[0]);
+            return ResponseEntity.ok("deleted");
+        } catch (InstanceNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (NotTheOwnerException e) {
+            return ResponseEntity.status(403).body(e.getMessage());
+        }
     }
 
     private String[] decodeCredentials(String authorizationHeader) {

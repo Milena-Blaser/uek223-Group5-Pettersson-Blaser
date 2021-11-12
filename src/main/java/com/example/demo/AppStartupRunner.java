@@ -50,7 +50,7 @@ class AppStartupRunner implements ApplicationRunner {
         authorityRepository.saveAll(allAuthorities);
 
 //        Roles
-        Role adminRole = new Role(null, "ROLE_ADMIN", allAuthorities);
+        Role adminRole = new Role(null, "ADMIN", allAuthorities);
         Role userRole = new Role(null, "USER", List.of(readListEntryAuth));
         roleRepository.save(adminRole);
         roleRepository.save(userRole);

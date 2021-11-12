@@ -29,10 +29,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
         http.httpBasic().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/swagger-ui").hasRole("ADMIN")
+                .antMatchers("/list/**").hasAnyRole("ADMIN", "USER")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**").hasAuthority("READ_LIST_ENTRY")
+                .antMatchers("/swagger-ui/").hasRole("ADMIN")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/list/add").hasAuthority("CREATE_LIST_ENTRY")
