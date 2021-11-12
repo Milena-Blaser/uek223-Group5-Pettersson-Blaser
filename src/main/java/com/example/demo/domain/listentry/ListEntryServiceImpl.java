@@ -32,7 +32,7 @@ public class ListEntryServiceImpl implements ListEntryService {
 
     @Override
     public List<ListEntry> getAllListEntries(UUID id) {
-        return listEntryRepository.findAll(sort);
+        return listEntryRepository.getAllListEntries(id);
     }
 
 
