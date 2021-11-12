@@ -33,9 +33,12 @@ public class ListEntryServiceImpl implements ListEntryService {
     }
 
     @Override
-    public ListEntryDTOForOutput getListEntry(UUID id) throws NoSuchElementException {
-        ListEntry listEntry = listEntryRepository.findById(id).get();
-
+    public ListEntryDTOForOutput getListEntry(UUID id) throws InstanceNotFoundException {
+        Optional<ListEntry> optionalListEntry;
+        if((optionalListEntry = listEntryRepository.findById(id)).isEmpty()) {
+            throw new InstanceNotFoundException("Element doesn't exist");
+        }
+        ListEntry listEntry = optionalListEntry.get();
         return  new ListEntryDTOForOutput(listEntry.getTitle(),listEntry.getText(),listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
     }
 

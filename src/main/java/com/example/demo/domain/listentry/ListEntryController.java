@@ -37,12 +37,12 @@ public class ListEntryController {
 
     @GetMapping("get/{id}")
     @PreAuthorize("hasAuthority('READ_LIST_ENTRY')")
-    public ResponseEntity<Optional<ListEntryDTOForOutput>> getListEntry(@PathVariable("id") UUID id) {
+    public ResponseEntity getListEntry(@PathVariable("id") UUID id) {
         Optional<ListEntryDTOForOutput> returnedListEntry = null;
         try {
             returnedListEntry = Optional.ofNullable(listEntryService.getListEntry(id));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(404).body(null);
+        } catch (InstanceNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
         }
         return ResponseEntity.ok().body(returnedListEntry);
     }
