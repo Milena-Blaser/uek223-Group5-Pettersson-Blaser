@@ -1,19 +1,7 @@
 package com.example.demo.domain.listentry.dto;
 
-import com.example.demo.domain.appUser.User;
-import com.example.demo.domain.listentry.Importance;
-import lombok.Getter;
-import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import java.time.LocalDate;
-import java.util.UUID;
-
-
-public class ListEntryDTO {
-    private String userID;
+public class ListEntryDTOForOutput {
 
     private String title;
 
@@ -21,24 +9,16 @@ public class ListEntryDTO {
 
     private String creationDate;
 
-    private Importance importance;
+    private int importance;
 
+    private String username;
 
-    public ListEntryDTO(String userID, String title, String text, String creationDate, Importance importance) {
-        this.userID = userID;
+    public ListEntryDTOForOutput( String title, String text, String creationDate, int importance, String username) {
+        this.username = username;
         this.title = title;
         this.text = text;
         this.creationDate = creationDate;
         this.importance = importance;
-    }
-
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
     }
 
     public String getTitle() {
@@ -65,11 +45,19 @@ public class ListEntryDTO {
         this.creationDate = creationDate;
     }
 
-    public Importance getImportance() {
+    public int getImportance() {
         return importance;
     }
 
-    public void setImportance(Importance importance) {
+    public void setImportance(int importance) {
         this.importance = importance;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

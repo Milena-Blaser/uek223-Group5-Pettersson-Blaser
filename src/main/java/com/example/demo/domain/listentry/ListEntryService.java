@@ -2,12 +2,14 @@ package com.example.demo.domain.listentry;
 
 
 import com.example.demo.domain.listentry.dto.ListEntryDTO;
+import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ListEntryService {
     ListEntry addListEntry(ListEntryDTO listEntry) throws InstanceNotFoundException;
-    List<ListEntry> getAllListEntries(UUID id);
+    ListEntryDTOForOutput getListEntry(UUID id) throws InstanceNotFoundException;
 }
