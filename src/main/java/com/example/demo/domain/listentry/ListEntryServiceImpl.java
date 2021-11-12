@@ -3,11 +3,14 @@ package com.example.demo.domain.listentry;
 import com.example.demo.domain.appUser.User;
 import com.example.demo.domain.appUser.UserServiceImpl;
 import com.example.demo.domain.listentry.dto.ListEntryDTO;
+import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,7 +33,10 @@ public class ListEntryServiceImpl implements ListEntryService {
     }
 
     @Override
-    public ListEntry getListEntry(UUID id) {
-        return listEntryRepository.getById(id);
+    public ListEntryDTOForOutput getListEntry(UUID id) throws NoSuchElementException {
+        ListEntry listEntry = listEntryRepository.findById(id).get();
+
+        return  new ListEntryDTOForOutput(listEntry.getTitle(),listEntry.getText(),listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
     }
+
 }
