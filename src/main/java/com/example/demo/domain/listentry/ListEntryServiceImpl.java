@@ -3,6 +3,7 @@ package com.example.demo.domain.listentry;
 import com.example.demo.domain.appUser.User;
 import com.example.demo.domain.appUser.UserServiceImpl;
 import com.example.demo.domain.listentry.dto.ListEntryDTO;
+import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdate;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

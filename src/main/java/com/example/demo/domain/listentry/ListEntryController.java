@@ -1,5 +1,6 @@
 package com.example.demo.domain.listentry;
 
+import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdate;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @RequestMapping("/list/")
 public class ListEntryController {
 
-    private ListEntryServiceImpl listEntryService;
+    private ListEntryService listEntryService;
 
     @Autowired
     public ListEntryController(ListEntryServiceImpl listEntryService) {
@@ -45,5 +46,11 @@ public class ListEntryController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
         return ResponseEntity.ok().body(returnedListEntry);
+    }
+
+    @PutMapping("update")
+    @PreAuthorize("hasAuthority('UPDATE_LIST_ENTRY')")
+    public ResponseEntity<ListEntry> updateListEntry(@RequestBody ListEntryDTOForUpdate inputEntry) {
+
     }
 }
