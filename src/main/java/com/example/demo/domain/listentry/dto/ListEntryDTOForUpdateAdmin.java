@@ -3,6 +3,7 @@ package com.example.demo.domain.listentry.dto;
 import com.example.demo.domain.listentry.Importance;
 
 public class ListEntryDTOForUpdateAdmin {
+
     private String id;
 
     private String userID;
