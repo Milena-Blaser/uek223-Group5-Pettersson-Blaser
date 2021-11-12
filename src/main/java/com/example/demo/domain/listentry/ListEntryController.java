@@ -1,5 +1,7 @@
 package com.example.demo.domain.listentry;
 
+import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateAdmin;
+import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateUser;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.domain.listentry.dto.ListEntryDTO;
 
 import javax.management.InstanceNotFoundException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,7 +20,7 @@ import java.util.UUID;
 @RequestMapping("/list/")
 public class ListEntryController {
 
-    private ListEntryServiceImpl listEntryService;
+    private ListEntryService listEntryService;
 
     @Autowired
     public ListEntryController(ListEntryServiceImpl listEntryService) {
@@ -52,4 +56,25 @@ public class ListEntryController {
     public ResponseEntity getAllListEntries() {
         return null;
     }
+    @PutMapping("update")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity updateListEntryAsUser(@RequestBody ListEntryDTOForUpdateUser inputEntry) {
+        try {
+            return ResponseEntity.ok(listEntryService.updateListEntryAsUser(inputEntry));
+        } catch (InstanceNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("admin/update")
+    @PreAuthorize("hasAuthority('UPDATE_LIST_ENTRY')")
+    public ResponseEntity updateListEntryAsAdmin (@RequestBody ListEntryDTOForUpdateAdmin inputEntry) {
+        try {
+            return ResponseEntity.ok(listEntryService.updateListEntryAsAdmin(inputEntry));
+        } catch (InstanceNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+
+    }
 }
+
