@@ -2,11 +2,13 @@ package com.example.demo.domain.listentry;
 
 import com.example.demo.domain.appUser.User;
 import com.example.demo.domain.appUser.UserServiceImpl;
+import com.example.demo.domain.authority.Authority;
 import com.example.demo.domain.listentry.dto.ListEntryDTO;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateAdmin;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateUser;
 
 import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
+import com.example.demo.exception.NotTheOwnerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import javax.management.InstanceNotFoundException;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class ListEntryServiceImpl implements ListEntryService {
@@ -38,7 +41,8 @@ public class ListEntryServiceImpl implements ListEntryService {
     }
 
     @Override
-    public ListEntry updateListEntryAsUser(ListEntryDTOForUpdateUser newListEntry) throws InstanceNotFoundException {
+    public ListEntry updateListEntryAsUser(ListEntryDTOForUpdateUser newListEntry,
+                                           String loggedInUsername) throws InstanceNotFoundException, NotTheOwnerException {
         Optional<ListEntry> oldListEntryOptional;
         if ((oldListEntryOptional = listEntryRepository.findById(UUID.fromString(newListEntry.getId()))).isPresent()) {
             ListEntry oldListEntry = oldListEntryOptional.get();
@@ -46,7 +50,9 @@ public class ListEntryServiceImpl implements ListEntryService {
             oldListEntry.setText(newListEntry.getText());
             oldListEntry.setCreationDate(LocalDate.parse(newListEntry.getCreationDate()));
             oldListEntry.setImportance(newListEntry.getImportance().getNumVal());
-
+            if (!isOwner(loggedInUsername, oldListEntry.getUser().getId()) &&
+                    !hasCertainAuthority(userService.getUser(loggedInUsername), "UPDATE_LIST_ENTRY"))
+                throw new NotTheOwnerException();
             return listEntryRepository.save(oldListEntry);
         } else {
             throw new InstanceNotFoundException("List Entry doesn't exist");
@@ -84,6 +90,16 @@ public class ListEntryServiceImpl implements ListEntryService {
 
     private boolean isOwner(String username, UUID userID) {
         return userService.getUser(username).getId().equals(userID);
+    }
+
+    private boolean hasCertainAuthority(User user, String searchedAuthority) {
+        AtomicBoolean result = new AtomicBoolean(false);
+        user.getRoles().forEach(role -> role.getAuthorities().forEach(authority -> {
+            if (searchedAuthority.equals(authority.getName()))
+                result.set(true);
+        }));
+        return result.get();
+
     }
 
 }

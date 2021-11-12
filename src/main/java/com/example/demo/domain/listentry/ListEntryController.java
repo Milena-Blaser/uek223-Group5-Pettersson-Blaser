@@ -3,6 +3,7 @@ package com.example.demo.domain.listentry;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateAdmin;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateUser;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
+import com.example.demo.exception.NotTheOwnerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,12 +53,15 @@ public class ListEntryController {
     }
 
     @PutMapping("update")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity updateListEntryAsUser(@RequestBody ListEntryDTOForUpdateUser inputEntry) {
+    public ResponseEntity updateListEntryAsUser(@RequestBody ListEntryDTOForUpdateUser inputEntry,
+                                                @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            return ResponseEntity.ok(listEntryService.updateListEntryAsUser(inputEntry));
+            return ResponseEntity.ok(listEntryService.updateListEntryAsUser(inputEntry,
+                    decodeCredentials(authorizationHeader)[0]));
         } catch (InstanceNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
+        } catch (NotTheOwnerException e) {
+            return ResponseEntity.status(403).body(e.getMessage());
         }
     }
 
