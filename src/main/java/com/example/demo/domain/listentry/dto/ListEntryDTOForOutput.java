@@ -1,6 +1,8 @@
 package com.example.demo.domain.listentry.dto;
 
 
+import com.example.demo.domain.listentry.ListEntry;
+
 public class ListEntryDTOForOutput {
 
     private String title;
@@ -19,6 +21,14 @@ public class ListEntryDTOForOutput {
         this.text = text;
         this.creationDate = creationDate;
         this.importance = importance;
+    }
+
+    public ListEntryDTOForOutput(ListEntry listEntry) {
+        this.username = listEntry.getUser().getUsername();
+        this.title = listEntry.getTitle();
+        this.text = listEntry.getText();
+        this.creationDate = listEntry.getCreationDate().toString();
+        this.importance = listEntry.getImportance();
     }
 
     public String getTitle() {
