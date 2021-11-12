@@ -47,7 +47,7 @@ public class ListEntryController {
 
     @PutMapping("admin/update")
     @PreAuthorize("hasAuthority('UPDATE_LIST_ENTRY')")
-    public ResponseEntity updateListEntryAsUser(@RequestBody ListEntryDTOForUpdateAdmin inputEntry) {
+    public ResponseEntity updateListEntryAsAdmin (@RequestBody ListEntryDTOForUpdateAdmin inputEntry) {
         try {
             return ResponseEntity.ok(listEntryService.updateListEntryAsAdmin(inputEntry));
         } catch (InstanceNotFoundException e) {
