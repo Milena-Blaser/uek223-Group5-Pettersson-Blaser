@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,5 +29,12 @@ public class ListEntryServiceImpl implements ListEntryService {
 
         return listEntryRepository.save(new ListEntry(null,listEntry.getTitle(),listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()),listEntry.getImportance().getNumVal(),user));
     }
+
+    @Override
+    public List<ListEntry> getAllListEntries(UUID id) {
+        return listEntryRepository.findAll(sort);
+    }
+
+
 
 }
