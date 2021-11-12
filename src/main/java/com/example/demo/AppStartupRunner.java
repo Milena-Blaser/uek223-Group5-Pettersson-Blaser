@@ -30,7 +30,7 @@ class AppStartupRunner implements ApplicationRunner {
     @Autowired
     private final AuthorityRepository authorityRepository;
     @Autowired
-    private final ListEntryRepository listEntryRepository;
+    private ListEntryRepository listEntryRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

@@ -51,11 +51,13 @@ public class ListEntryController {
         return ResponseEntity.ok().body(returnedListEntry);
     }
 
-    @GetMapping
-    @PreAuthorize("hasAuthority('READ_LIST_ENTRY')")
-    public ResponseEntity getAllListEntries() {
-        return null;
+    @GetMapping("mylist")
+    @PreAuthorize("hasAuthority('READ_LIST_ENTRY")
+    public ResponseEntity getAllListEntries(@RequestHeader("Authorization") String authHeader) {
+        String[] userCredentials = decodeCredentials(authHeader);
+        return ResponseEntity.ok().body(listEntryService.getAllListEntries(userCredentials[0]));
     }
+
     @PutMapping("update")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity updateListEntryAsUser(@RequestBody ListEntryDTOForUpdateUser inputEntry) {

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -80,6 +82,20 @@ public class ListEntryServiceImpl implements ListEntryService {
         }
         ListEntry listEntry = optionalListEntry.get();
         return  new ListEntryDTOForOutput(listEntry.getTitle(),listEntry.getText(),listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
+    }
+    @Override
+    public Collection<ListEntry> getAllListEntries(String username){
+
+        UUID user = userService.getUser(username).getId();
+        Collection<ListEntry> listEntries = listEntryRepository.findByUserID(user);
+        //Collection<ListEntryDTOForOutput> listEntryDTOForOutputs = null;
+        /*for(int i = 0; i < listEntries.size(); i++){
+            ListEntry listEntry = listEntries.;
+            ListEntryDTOForOutput listEntryDTOForOutput = new ListEntryDTOForOutput(listEntry.getTitle(), listEntry.getText(), listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
+            l7istEntryDTOForOutputs.add(listEntryDTOForOutput);
+        }*/
+        return listEntries;
+
     }
 
     private boolean isOwner(String username, UUID userID) {
