@@ -37,6 +37,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
                 .authorizeRequests()
                 .antMatchers("/list/add").hasAuthority("CREATE_LIST_ENTRY")
                 .and()
+                .authorizeRequests()
+                .antMatchers("/list/get/**").hasAuthority("READ_LIST_ENTRY")
+                .and()
                 .formLogin();
     }
  }

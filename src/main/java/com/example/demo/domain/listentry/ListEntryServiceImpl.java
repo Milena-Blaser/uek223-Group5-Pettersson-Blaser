@@ -5,6 +5,8 @@ import com.example.demo.domain.appUser.UserServiceImpl;
 import com.example.demo.domain.listentry.dto.ListEntryDTO;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateAdmin;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateUser;
+
+import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +29,11 @@ public class ListEntryServiceImpl implements ListEntryService {
 
     @Override
     public ListEntry addListEntry(ListEntryDTO listEntry) throws InstanceNotFoundException{
-        User user = userService.findById(UUID.fromString(listEntry.getUserID())).orElseGet(null);
-
+        Optional<User> optionalUser;
+        if((optionalUser = userService.findById(UUID.fromString(listEntry.getUserID()))).isEmpty()) {
+          throw new InstanceNotFoundException("User does not exist");
+        }
+        User user = optionalUser.get();
         return listEntryRepository.save(new ListEntry(null,listEntry.getTitle(),listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()),listEntry.getImportance().getNumVal(),user));
     }
 
@@ -67,5 +72,14 @@ public class ListEntryServiceImpl implements ListEntryService {
         }
     }
 
+    @Override
+    public ListEntryDTOForOutput getListEntry(UUID id) throws InstanceNotFoundException {
+        Optional<ListEntry> optionalListEntry;
+        if((optionalListEntry = listEntryRepository.findById(id)).isEmpty()) {
+            throw new InstanceNotFoundException("Element does not exist");
+        }
+        ListEntry listEntry = optionalListEntry.get();
+        return  new ListEntryDTOForOutput(listEntry.getTitle(),listEntry.getText(),listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
+    }
 
 }

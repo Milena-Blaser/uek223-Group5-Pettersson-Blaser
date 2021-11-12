@@ -61,4 +61,5 @@ public class ListEntryDTOForUpdateUser {
     public void setId(String id) {
         this.id = id;
     }
+
 }
