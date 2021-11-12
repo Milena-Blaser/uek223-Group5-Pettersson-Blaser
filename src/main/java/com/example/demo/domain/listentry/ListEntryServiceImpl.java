@@ -3,6 +3,7 @@ package com.example.demo.domain.listentry;
 import com.example.demo.domain.appUser.User;
 import com.example.demo.domain.appUser.UserServiceImpl;
 import com.example.demo.domain.listentry.dto.ListEntryDTO;
+import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,11 @@ public class ListEntryServiceImpl implements ListEntryService {
         User user = userService.findById(UUID.fromString(listEntry.getUserID())).orElseGet(null);
 
         return listEntryRepository.save(new ListEntry(null,listEntry.getTitle(),listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()),listEntry.getImportance().getNumVal(),user));
+    }
+
+    @Override
+    public ListEntry updateListEntry(ListEntryDTOForUpdate newListEntry) throws InstanceNotFoundException {
+
     }
 
 }
