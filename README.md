@@ -1,5 +1,8 @@
 # uek223-Group5-Pettersson-Blaser
 
+## Description
+This repository is a partial functionality of a bigger project. It implemented a list entry where every user can create personal list entries and manage them. Every user can look at all the other users list entries. 
+
 ## Setup
 
 Enter the following command into your command line
