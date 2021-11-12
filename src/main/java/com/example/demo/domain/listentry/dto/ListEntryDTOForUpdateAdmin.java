@@ -2,7 +2,7 @@ package com.example.demo.domain.listentry.dto;
 
 import com.example.demo.domain.listentry.Importance;
 
-public class ListEntryDTOWithID {
+public class ListEntryDTOForUpdateAdmin {
     private String id;
 
     private String userID;
@@ -15,8 +15,8 @@ public class ListEntryDTOWithID {
 
     private Importance importance;
 
-    public ListEntryDTOWithID(String id, String userID, String title, String text,
-                              String creationDate, Importance importance) {
+    public ListEntryDTOForUpdateAdmin(String id, String userID, String title, String text,
+                                      String creationDate, Importance importance) {
         this.id = id;
         this.userID = userID;
         this.title = title;

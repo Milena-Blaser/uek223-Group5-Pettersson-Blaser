@@ -3,12 +3,14 @@ package com.example.demo.domain.listentry;
 import com.example.demo.domain.appUser.User;
 import com.example.demo.domain.appUser.UserServiceImpl;
 import com.example.demo.domain.listentry.dto.ListEntryDTO;
-import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdate;
+import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateAdmin;
+import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,8 +33,39 @@ public class ListEntryServiceImpl implements ListEntryService {
     }
 
     @Override
-    public ListEntry updateListEntry(ListEntryDTOForUpdate newListEntry) throws InstanceNotFoundException {
+    public ListEntry updateListEntryAsUser(ListEntryDTOForUpdateUser newListEntry) throws InstanceNotFoundException {
+        Optional<ListEntry> oldListEntryOptional;
+        if ((oldListEntryOptional = listEntryRepository.findById(UUID.fromString(newListEntry.getId()))).isPresent()) {
+            ListEntry oldListEntry = oldListEntryOptional.get();
+            oldListEntry.setTitle(newListEntry.getTitle());
+            oldListEntry.setText(newListEntry.getText());
+            oldListEntry.setCreationDate(LocalDate.parse(newListEntry.getCreationDate()));
+            oldListEntry.setImportance(newListEntry.getImportance().getNumVal());
 
+            return listEntryRepository.save(oldListEntry);
+        } else {
+            throw new InstanceNotFoundException("List Entry doesn't exist");
+        }
     }
+
+    @Override
+    public ListEntry updateListEntryAsAdmin(ListEntryDTOForUpdateAdmin newListEntry) throws InstanceNotFoundException {
+        Optional<ListEntry> oldListEntryOptional;
+        Optional<User> newUser;
+        if ((newUser = userService.findById(UUID.fromString(newListEntry.getUserID()))).isEmpty())
+            throw new InstanceNotFoundException("User to assign entry to doesn't exist");
+        if ((oldListEntryOptional = listEntryRepository.findById(UUID.fromString(newListEntry.getId()))).isPresent()) {
+            ListEntry oldListEntry = oldListEntryOptional.get();
+            oldListEntry.setTitle(newListEntry.getTitle());
+            oldListEntry.setText(newListEntry.getText());
+            oldListEntry.setCreationDate(LocalDate.parse(newListEntry.getCreationDate()));
+            oldListEntry.setImportance(newListEntry.getImportance().getNumVal());
+            oldListEntry.setUser(newUser.get());
+            return listEntryRepository.save(oldListEntry);
+        } else {
+            throw new InstanceNotFoundException("List Entry doesn't exist");
+        }
+    }
+
 
 }
