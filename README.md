@@ -1,7 +1,7 @@
 # uek223-Group5-Pettersson-Blaser
 
 ## Description
-This repository is a partial functionality of a bigger project. It implemented a list entry where every user can create personal list entries and manage them. Every user can look at all the other users list entries. 
+This repository is a partial functionality of a bigger project. It implemented a list entry where every user can create personal list entries and manage them. Every user can look at all the other users list entries. Users that are not logged in can't use any of the endpoints. For the login the basic authentification is used. If you're an admin, a summary of the endpoints is available at the path /swagger-ui/ .
 
 ## Setup
 
