@@ -13,10 +13,7 @@ import com.example.demo.domain.listentry.dto.ListEntryDTO;
 
 import javax.management.InstanceNotFoundException;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/list/")
@@ -43,8 +40,13 @@ public class ListEntryController {
     @GetMapping("{userID}")
     @PreAuthorize("hasAuthority('READ_LIST_ENTRY')")
     public ResponseEntity getAllListEntries(@PathVariable("userID") UUID id) {
-
-        return ResponseEntity.ok().body(listEntryService.getAllListEntries(id));
+        List<ListEntryDTOForOutput> returnedList = null;
+        try{
+            returnedList = listEntryService.getAllListEntries(id);
+        }catch(InstanceNotFoundException e){
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+        return ResponseEntity.ok().body(returnedList);
     }
 
     @GetMapping("get/{listEntryID}")

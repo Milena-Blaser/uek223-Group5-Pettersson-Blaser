@@ -89,15 +89,21 @@ public class ListEntryServiceImpl implements ListEntryService {
         return  new ListEntryDTOForOutput(listEntry.getTitle(),listEntry.getText(),listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
     }
     @Override
-    public List<ListEntryDTOForOutput> getAllListEntries(UUID id){
-        List<ListEntry> listEntries = listEntryRepository.findByUserID(id);
-        List<ListEntryDTOForOutput> listEntryDTOForOutputs = new ArrayList<>();
-        for(int i = 0; i < listEntries.size(); i++) {
-            ListEntry listEntry = listEntries.get(i);
-            ListEntryDTOForOutput listEntryDTOForOutput = new ListEntryDTOForOutput(listEntry);
-            listEntryDTOForOutputs.add(listEntryDTOForOutput);
+    public List<ListEntryDTOForOutput> getAllListEntries(UUID id) throws InstanceNotFoundException{
+        List<ListEntry> listEntries;
+        if(!(listEntries = listEntryRepository.findByUserID(id)).isEmpty()) {
+
+            List<ListEntryDTOForOutput> listEntryDTOForOutputs = new ArrayList<>();
+            for (int i = 0; i < listEntries.size(); i++) {
+                ListEntry listEntry = listEntries.get(i);
+                ListEntryDTOForOutput listEntryDTOForOutput = new ListEntryDTOForOutput(listEntry);
+                listEntryDTOForOutputs.add(listEntryDTOForOutput);
+            }
+            return listEntryDTOForOutputs;
         }
-        return listEntryDTOForOutputs;
+        else{
+            throw new InstanceNotFoundException("User does not exist");
+        }
 
     }
 
