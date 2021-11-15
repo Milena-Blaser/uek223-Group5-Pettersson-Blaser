@@ -119,6 +119,21 @@ public class ListEntryServiceImpl implements ListEntryService {
 
     }
 
+    @Override
+    public void deleteAllListEntries(UUID id, String username) throws InstanceNotFoundException, NotTheOwnerException {
+        List<ListEntry> optionalListEntries = listEntryRepository.findByUserID(id);
+        if(optionalListEntries.isEmpty()){
+            throw new InstanceNotFoundException("User does not exist");
+        }
+        else if(!isOwner(username,optionalListEntries.get(0).getUser().getId()) && !hasCertainAuthority(userService.getUser(username), "DELETE-LIST")){
+            throw new NotTheOwnerException("You do not own this list of entries and do not have the authority to delete those entries");
+        } else{
+            for(int i = 0; i < optionalListEntries.size(); i++) {
+                listEntryRepository.delete(optionalListEntries.get(i));
+            }
+        }
+    }
+
     private boolean isOwner(String username, UUID userID) {
         return userService.getUser(username).getId().equals(userID);
     }
