@@ -31,6 +31,14 @@ public class ListEntryServiceImpl implements ListEntryService {
         this.roleService = roleService;
     }
 
+    /**
+     * This method creates a new ListEntry and saves it to the database. If the UUID that is given in the JSON-Body does
+     * not match an existing user a InstanceNotFoundException is thrown.
+     *
+     * @param listEntry is the combined ListEntry information given in the RequestBody
+     * @return the newly created ListEntry is returned
+     * @throws InstanceNotFoundException if the UserID does not match an existing User
+     */
     @Override
     public ListEntry addListEntry(ListEntryDTO listEntry) throws InstanceNotFoundException {
         Optional<User> optionalUser;
@@ -79,8 +87,15 @@ public class ListEntryServiceImpl implements ListEntryService {
         }
     }
 
+    /**
+     * This method is responsible for getting a specific ListEntry.
+     *
+     * @param id the ID of the ListEntry that should be displayed
+     * @return the ListEntry according to the given ID
+     * @throws InstanceNotFoundException if the given ID does not match an existing ListEntry
+     */
     @Override
-    public ListEntryDTOForOutput getListEntry(UUID id, String username) throws InstanceNotFoundException {
+    public ListEntryDTOForOutput getListEntry(UUID id) throws InstanceNotFoundException {
         Optional<ListEntry> optionalListEntry;
 
         if ((optionalListEntry = listEntryRepository.findById(id)).isEmpty()) {
@@ -88,14 +103,20 @@ public class ListEntryServiceImpl implements ListEntryService {
         }
         ListEntry listEntry = optionalListEntry.get();
 
-        return new ListEntryDTOForOutput(listEntry.getTitle(), listEntry.getText(), listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
+        return new ListEntryDTOForOutput(listEntry);
     }
 
+    /**
+     * This method will get all ListEntries that belong to the given user
+     *
+     * @param id the UUID of the user that is being searched for
+     * @return the list of all the ListEntries that belong to the user
+     * @throws InstanceNotFoundException if the given userID does not exist
+     */
     @Override
     public List<ListEntryDTOForOutput> getAllListEntries(UUID id) throws InstanceNotFoundException {
         List<ListEntry> listEntries;
         if (!(listEntries = listEntryRepository.findByUserID(id)).isEmpty()) {
-
             List<ListEntryDTOForOutput> listEntryDTOForOutputs = new ArrayList<>();
             for (int i = 0; i < listEntries.size(); i++) {
                 ListEntry listEntry = listEntries.get(i);
@@ -121,13 +142,23 @@ public class ListEntryServiceImpl implements ListEntryService {
 
     }
 
+    /**
+     * This method will delete all ListEntries that belong to one user. Depending on the role that the currently logged
+     * in user has the behaviour changes. If the user is an admin he is allowed to delete all the Entries without
+     * having to check if they have the correct authority or if they are the owner of the list.
+     * @param id of the user
+     * @param username the username of the currently logged in user
+     * @throws InstanceNotFoundException if the user does not exist
+     * @throws NotTheOwnerException if the logged in user is not the owner of the list and/or has not the authority to
+     * delete ListEntries
+     */
     @Override
     public void deleteAllListEntries(UUID id, String username) throws InstanceNotFoundException, NotTheOwnerException {
         List<ListEntry> listEntries = listEntryRepository.findByUserID(id);
         if (listEntries.isEmpty()) {
             throw new InstanceNotFoundException("User does not exist");
         }
-        if (!userService.getUser(username).getRoles().contains(roleService.getRoleByRolename("ADMIN"))){
+        if (!userService.getUser(username).getRoles().contains(roleService.getRoleByRolename("ADMIN"))) {
             if (!isOwner(username, listEntries.get(1).getUser().getId()) && !hasCertainAuthority(userService.getUser(username), "DELETE-LIST")) {
                 throw new NotTheOwnerException("You do not own this list of entries and do not have the authority to delete those entries");
             }
