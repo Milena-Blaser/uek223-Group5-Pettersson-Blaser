@@ -52,7 +52,7 @@ public class ListEntryServiceImpl implements ListEntryService {
             oldListEntry.setImportance(newListEntry.getImportance().getNumVal());
             if (!isOwner(loggedInUsername, oldListEntry.getUser().getId()) &&
                     !hasCertainAuthority(userService.getUser(loggedInUsername), "UPDATE_LIST_ENTRY"))
-                throw new NotTheOwnerException();
+                throw new NotTheOwnerException("You're not the owner of this entry and you do not have the authority to edit it");
             return listEntryRepository.save(oldListEntry);
         } else {
             throw new InstanceNotFoundException("List Entry doesn't exist");
@@ -86,6 +86,18 @@ public class ListEntryServiceImpl implements ListEntryService {
         }
         ListEntry listEntry = optionalListEntry.get();
         return  new ListEntryDTOForOutput(listEntry.getTitle(),listEntry.getText(),listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
+    }
+
+    @Override
+    public void deleteListEntry(UUID id, String username) throws InstanceNotFoundException, NotTheOwnerException{
+        Optional<ListEntry> optionalListEntry = listEntryRepository.findById(id);
+        if (optionalListEntry.isEmpty())
+            throw new InstanceNotFoundException("List Entry doesn't exist");
+        if (!isOwner(username, optionalListEntry.get().getUser().getId()) && !hasCertainAuthority(userService.getUser(username),
+                "DELETE_LIST_ENTRY"))
+            throw new NotTheOwnerException("You're not the owner of this entry and you do not have the authority to delete it");
+        listEntryRepository.delete(optionalListEntry.get());
+
     }
 
     private boolean isOwner(String username, UUID userID) {
