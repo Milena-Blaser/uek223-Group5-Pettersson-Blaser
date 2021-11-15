@@ -30,13 +30,17 @@ public class ListEntryServiceImpl implements ListEntryService {
     }
 
     @Override
-    public ListEntry addListEntry(ListEntryDTO listEntry) throws InstanceNotFoundException{
+    public ListEntry addListEntry(ListEntryDTO listEntry, String username) throws InstanceNotFoundException{
         Optional<User> optionalUser;
-        if((optionalUser = userService.findById(UUID.fromString(listEntry.getUserID()))).isEmpty()) {
-          throw new InstanceNotFoundException("User does not exist");
+        if(userService.getUser(username).getRoles().contains(roleService.getRoleByRolename("ADMIN"))) {
+            if ((optionalUser = userService.findById(UUID.fromString(listEntry.getUserID()))).isEmpty()) {
+                throw new InstanceNotFoundException("User does not exist");
+            }
+            User user = optionalUser.get();
+            return listEntryRepository.save(new ListEntry(null, listEntry.getTitle(), listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()), listEntry.getImportance().getNumVal(), user));
         }
-        User user = optionalUser.get();
-        return listEntryRepository.save(new ListEntry(null,listEntry.getTitle(),listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()),listEntry.getImportance().getNumVal(),user));
+            return listEntryRepository.save(new ListEntry(null, listEntry.getTitle(), listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()), listEntry.getImportance().getNumVal(), userService.getUser(username)));
+
     }
 
     @Override

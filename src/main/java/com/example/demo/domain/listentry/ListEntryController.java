@@ -28,10 +28,10 @@ public class ListEntryController {
 
     @PostMapping("add")
     @PreAuthorize("hasAuthority('CREATE_LIST_ENTRY')")
-    public ResponseEntity addListEntry(@RequestBody ListEntryDTO listEntry) {
+    public ResponseEntity addListEntry(@RequestBody ListEntryDTO listEntry, @RequestHeader String authHeader) {
         ListEntry returnedListEntry = null;
         try {
-            returnedListEntry = listEntryService.addListEntry(listEntry);
+            returnedListEntry = listEntryService.addListEntry(listEntry, decodeCredentials(authHeader)[0]);
         } catch (InstanceNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
