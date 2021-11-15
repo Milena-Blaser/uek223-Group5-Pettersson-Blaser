@@ -2,12 +2,12 @@ package com.example.demo.domain.listentry;
 
 import com.example.demo.domain.appUser.User;
 import com.example.demo.domain.appUser.UserServiceImpl;
-import com.example.demo.domain.authority.Authority;
 import com.example.demo.domain.listentry.dto.ListEntryDTO;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateAdmin;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateUser;
 
 import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
+import com.example.demo.domain.role.RoleServiceImpl;
 import com.example.demo.exception.NotTheOwnerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,21 +22,23 @@ public class ListEntryServiceImpl implements ListEntryService {
 
     private final ListEntryRepository listEntryRepository;
     private final UserServiceImpl userService;
+    private final RoleServiceImpl roleService;
 
     @Autowired
-    public ListEntryServiceImpl(ListEntryRepository listEntryRepository, UserServiceImpl userService) {
+    public ListEntryServiceImpl(ListEntryRepository listEntryRepository, UserServiceImpl userService, RoleServiceImpl roleService) {
         this.listEntryRepository = listEntryRepository;
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @Override
-    public ListEntry addListEntry(ListEntryDTO listEntry) throws InstanceNotFoundException{
+    public ListEntry addListEntry(ListEntryDTO listEntry) throws InstanceNotFoundException {
         Optional<User> optionalUser;
-        if((optionalUser = userService.findById(UUID.fromString(listEntry.getUserID()))).isEmpty()) {
-          throw new InstanceNotFoundException("User does not exist");
+        if ((optionalUser = userService.findById(UUID.fromString(listEntry.getUserID()))).isEmpty()) {
+            throw new InstanceNotFoundException("User does not exist");
         }
         User user = optionalUser.get();
-        return listEntryRepository.save(new ListEntry(null,listEntry.getTitle(),listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()),listEntry.getImportance().getNumVal(),user));
+        return listEntryRepository.save(new ListEntry(null, listEntry.getTitle(), listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()), listEntry.getImportance().getNumVal(), user));
     }
 
     @Override
@@ -81,17 +83,18 @@ public class ListEntryServiceImpl implements ListEntryService {
     public ListEntryDTOForOutput getListEntry(UUID id, String username) throws InstanceNotFoundException {
         Optional<ListEntry> optionalListEntry;
 
-        if((optionalListEntry = listEntryRepository.findById(id)).isEmpty()) {
+        if ((optionalListEntry = listEntryRepository.findById(id)).isEmpty()) {
             throw new InstanceNotFoundException("Element does not exist");
         }
         ListEntry listEntry = optionalListEntry.get();
 
-        return  new ListEntryDTOForOutput(listEntry.getTitle(),listEntry.getText(),listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
+        return new ListEntryDTOForOutput(listEntry.getTitle(), listEntry.getText(), listEntry.getCreationDate().toString(), listEntry.getImportance(), listEntry.getUser().getUsername());
     }
+
     @Override
-    public List<ListEntryDTOForOutput> getAllListEntries(UUID id) throws InstanceNotFoundException{
+    public List<ListEntryDTOForOutput> getAllListEntries(UUID id) throws InstanceNotFoundException {
         List<ListEntry> listEntries;
-        if(!(listEntries = listEntryRepository.findByUserID(id)).isEmpty()) {
+        if (!(listEntries = listEntryRepository.findByUserID(id)).isEmpty()) {
 
             List<ListEntryDTOForOutput> listEntryDTOForOutputs = new ArrayList<>();
             for (int i = 0; i < listEntries.size(); i++) {
@@ -100,15 +103,14 @@ public class ListEntryServiceImpl implements ListEntryService {
                 listEntryDTOForOutputs.add(listEntryDTOForOutput);
             }
             return listEntryDTOForOutputs;
-        }
-        else{
+        } else {
             throw new InstanceNotFoundException("User does not exist");
         }
 
     }
 
     @Override
-    public void deleteListEntry(UUID id, String username) throws InstanceNotFoundException, NotTheOwnerException{
+    public void deleteListEntry(UUID id, String username) throws InstanceNotFoundException, NotTheOwnerException {
         Optional<ListEntry> optionalListEntry = listEntryRepository.findById(id);
         if (optionalListEntry.isEmpty())
             throw new InstanceNotFoundException("List Entry doesn't exist");
@@ -121,16 +123,18 @@ public class ListEntryServiceImpl implements ListEntryService {
 
     @Override
     public void deleteAllListEntries(UUID id, String username) throws InstanceNotFoundException, NotTheOwnerException {
-        List<ListEntry> optionalListEntries = listEntryRepository.findByUserID(id);
-        if(optionalListEntries.isEmpty()){
+        List<ListEntry> listEntries = listEntryRepository.findByUserID(id);
+        if (listEntries.isEmpty()) {
             throw new InstanceNotFoundException("User does not exist");
         }
-        else if(!isOwner(username,optionalListEntries.get(0).getUser().getId()) && !hasCertainAuthority(userService.getUser(username), "DELETE-LIST")){
-            throw new NotTheOwnerException("You do not own this list of entries and do not have the authority to delete those entries");
-        } else{
-            for(int i = 0; i < optionalListEntries.size(); i++) {
-                listEntryRepository.delete(optionalListEntries.get(i));
+        if (!userService.getUser(username).getRoles().contains(roleService.getRoleByRolename("ADMIN"))){
+            if (!isOwner(username, listEntries.get(1).getUser().getId()) && !hasCertainAuthority(userService.getUser(username), "DELETE-LIST")) {
+                throw new NotTheOwnerException("You do not own this list of entries and do not have the authority to delete those entries");
             }
+        }
+        for (int i = 0; i < listEntries.size(); i++) {
+            listEntryRepository.delete(listEntries.get(i));
+
         }
     }
 

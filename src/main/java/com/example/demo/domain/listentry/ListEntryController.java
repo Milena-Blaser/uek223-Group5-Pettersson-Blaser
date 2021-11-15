@@ -99,9 +99,9 @@ public class ListEntryController {
         }
     }
     @DeleteMapping("{id}")
-    public ResponseEntity deleteAllListEntries(@PathVariable UUID id, @RequestHeader("Authorization") String authHeader){
+    public ResponseEntity deleteAllListEntriesAsUser(@PathVariable UUID id, @RequestHeader("Authorization") String authHeader){
         try {
-            listEntryService.deleteAllListEntries(id, authHeader);
+            listEntryService.deleteAllListEntries(id,decodeCredentials(authHeader)[0]);
             return ResponseEntity.ok().body("All list entries were deleted");
         }catch (InstanceNotFoundException e){
             return ResponseEntity.status(404).body(e.getMessage());
