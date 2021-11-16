@@ -6,16 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RoleServiceImpl implements RoleService{
+public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private AuthorityRepository authorityRepository;
 
     @Override
-    public void addAuthorityToRole( String rolename, String authorityname){
-    Authority authority = authorityRepository.findByName(authorityname);
-    Role role = roleRepository.findByName(rolename);
-    role.getAuthorities().add(authority);
-    }}
+    public void addAuthorityToRole(String rolename, String authorityname) {
+        Authority authority = authorityRepository.findByName(authorityname);
+        Role role = roleRepository.findByName(rolename);
+        role.getAuthorities().add(authority);
+    }
+
+    @Override
+    public Role getRoleByRolename(String rolename) {
+        return roleRepository.findByName(rolename);
+    }
+}
 

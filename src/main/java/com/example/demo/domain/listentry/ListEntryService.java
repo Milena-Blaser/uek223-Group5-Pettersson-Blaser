@@ -24,5 +24,9 @@ public interface ListEntryService {
     ListEntryDTOForOutput getListEntry(UUID id, String username) throws InstanceNotFoundException;
 
     List<ListEntryDTOForOutput> getAllListEntries(UUID id) throws InstanceNotFoundException;
+
     void deleteListEntry(UUID id, String username) throws InstanceNotFoundException, NotTheOwnerException;
+
+    void deleteAllListEntries(UUID id, String username) throws InstanceNotFoundException, NotTheOwnerException;
+
 }
