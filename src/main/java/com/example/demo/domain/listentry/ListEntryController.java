@@ -98,6 +98,18 @@ public class ListEntryController {
             return ResponseEntity.status(403).body(e.getMessage());
         }
     }
+    @DeleteMapping("{id}")
+    public ResponseEntity deleteAllListEntriesAsUser(@PathVariable UUID id, @RequestHeader("Authorization") String authHeader){
+        try {
+            listEntryService.deleteAllListEntries(id,decodeCredentials(authHeader)[0]);
+            return ResponseEntity.ok().body("All list entries were deleted");
+        }catch (InstanceNotFoundException e){
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+        catch (NotTheOwnerException e){
+            return ResponseEntity.status(403).body(e.getMessage());
+        }
+    }
 
     private String[] decodeCredentials(String authorizationHeader) {
         String base64Credentials = authorizationHeader.substring("Basic".length()).trim();
