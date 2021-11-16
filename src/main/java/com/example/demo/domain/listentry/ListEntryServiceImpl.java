@@ -136,7 +136,7 @@ public class ListEntryServiceImpl implements ListEntryService {
             throw new InstanceNotFoundException("User does not exist");
         }
         if (!userService.getUser(username).getRoles().contains(roleService.getRoleByRolename("ADMIN"))){
-            if (!isOwner(username, listEntries.get(1).getUser().getId()) && !hasCertainAuthority(userService.getUser(username), "DELETE-LIST")) {
+            if (!isOwner(username, listEntries.get(1).getUser().getId()) && !hasCertainAuthority(userService.getUser(username), "DELETE_LIST_ENTRY")) {
                 throw new NotTheOwnerException("You do not own this list of entries and do not have the authority to delete those entries");
             }
         }
