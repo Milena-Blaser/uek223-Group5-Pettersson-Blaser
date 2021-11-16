@@ -32,18 +32,22 @@ public class ListEntryServiceImpl implements ListEntryService {
     }
 
     @Override
-    public ListEntry addListEntry(ListEntryDTO listEntry, String username) throws InstanceNotFoundException{
+    public ListEntryDTOForOutput addListEntry(ListEntryDTO listEntry, String username) throws InstanceNotFoundException{
         Optional<User> optionalUser;
+        ListEntry newListEntry;
         if(userService.getUser(username).getRoles().contains(roleService.getRoleByRolename("ADMIN"))) {
             if ((optionalUser = userService.findById(UUID.fromString(listEntry.getUserID()))).isEmpty()) {
                 throw new InstanceNotFoundException("User does not exist");
             }
             User user = optionalUser.get();
-            return listEntryRepository.save(new ListEntry(null, listEntry.getTitle(), listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()), listEntry.getImportance().getNumVal(), user));
+            newListEntry = listEntryRepository.save(new ListEntry(null, listEntry.getTitle(), listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()), listEntry.getImportance().getNumVal(), user));
+            return new ListEntryDTOForOutput(newListEntry);
         }
-            return listEntryRepository.save(new ListEntry(null, listEntry.getTitle(), listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()), listEntry.getImportance().getNumVal(), userService.getUser(username)));
+        newListEntry = listEntryRepository.save(new ListEntry(null, listEntry.getTitle(), listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()), listEntry.getImportance().getNumVal(), userService.getUser(username)));
+        return new ListEntryDTOForOutput(newListEntry);
 
     }
+
 
     @Override
     public ListEntry updateListEntryAsUser(ListEntryDTOForUpdateUser newListEntry,
