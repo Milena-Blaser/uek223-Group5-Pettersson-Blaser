@@ -9,9 +9,7 @@ import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
 import com.example.demo.exception.NotTheOwnerException;
 
 import javax.management.InstanceNotFoundException;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface ListEntryService {
