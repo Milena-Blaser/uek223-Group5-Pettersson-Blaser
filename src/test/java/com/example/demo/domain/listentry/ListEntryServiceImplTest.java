@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
@@ -32,10 +33,6 @@ class ListEntryServiceImplTest {
     @Autowired
     private UserService userService;
     @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private AuthorityRepository authorityRepository;
-    @Autowired
     private ListEntryRepository listEntryRepository;
     @Autowired
     private ListEntryService listEntryService;
@@ -45,6 +42,14 @@ class ListEntryServiceImplTest {
     void setUp() {
         admin = userService.getUser("admin");
         user = userService.getUser("james");
+        listEntryRepository.save(new ListEntry(null, "TEST TITLE", "TEST DESCRIPTION", LocalDate.now(),
+                Importance.NEUTRAL.getNumVal(), user));
+        listEntryRepository.save(new ListEntry(null, "TEST TITLE 2", "TEST DESCRIPTION 2", LocalDate.now(),
+                Importance.NEUTRAL.getNumVal(), user));
+        listEntryRepository.save(new ListEntry(null, "TEST ADMIN TITLE", "TEST ADMIN DESCRIPTION", LocalDate.now(),
+                Importance.NEUTRAL.getNumVal(), admin));
+        listEntryRepository.save(new ListEntry(null, "TEST ADMIN TITLE 2", "TEST ADMIN DESCRIPTION 2", LocalDate.now(),
+                Importance.NEUTRAL.getNumVal(), admin));
     }
 
     @Test
@@ -71,6 +76,7 @@ class ListEntryServiceImplTest {
         Assertions.assertNotNull(listEntryRepository.getById(uuid));
     }
 
+    @Transactional
     @Test
     void updateOwnListEntryAsUser() {
         ListEntry listEntry = listEntryRepository.findByUserID(user.getId()).get(0);
@@ -90,6 +96,7 @@ class ListEntryServiceImplTest {
                 );
     }
 
+    @Transactional
     @Test
     void updateOtherListEntryAsUser() {
         ListEntry listEntry = listEntryRepository.findByUserID(admin.getId()).get(0);
@@ -97,12 +104,13 @@ class ListEntryServiceImplTest {
                 "UPDATED TITLE", "UPDATED TEXT", "2021-11-13", Importance.LESS_IMPORTANT);
         try {
             listEntryService.updateListEntryAsUser(updateData, user.getUsername());
+            Assertions.fail("User was able to update post without necessary rights");
         } catch (InstanceNotFoundException | NotTheOwnerException e) {
             Assertions.assertTrue(e instanceof NotTheOwnerException);
         }
-        Assertions.fail("User was able to update post without necessary rights");
     }
 
+    @Transactional
     @Test
     void updateOwnListEntryAsAdmin() {
         ListEntry listEntry = listEntryRepository.findByUserID(admin.getId()).get(0);
@@ -123,6 +131,7 @@ class ListEntryServiceImplTest {
         );
     }
 
+    @Transactional
     @Test
     void updateOtherListEntryAsAdmin() {
         ListEntry listEntry = listEntryRepository.findByUserID(user.getId()).get(0);
@@ -143,14 +152,23 @@ class ListEntryServiceImplTest {
         );
     }
 
+    @Transactional
     @Test
     void getListEntry() {
-
+        try {
+            Assertions.assertEquals(listEntryService.getListEntry(listEntryRepository.findByUserID(
+                    user.getId()).get(0).getId(), user.getUsername()).getUsername(), user.getUsername());
+        } catch (InstanceNotFoundException e) {
+            Assertions.fail(e.getMessage());
+        }
     }
 
+    @Transactional
     @Test
     void getAllListEntries() {
         listEntryRepository.save(new ListEntry(null, "TEST TITLE", "TEST DESCRIPTION", LocalDate.now(),
+                Importance.NEUTRAL.getNumVal(), user));
+        listEntryRepository.save(new ListEntry(null, "TEST TITLE 2", "TEST DESCRIPTION 2", LocalDate.now(),
                 Importance.NEUTRAL.getNumVal(), user));
         List<ListEntryDTOForOutput> listEntries = new ArrayList<>();
         try {
@@ -158,10 +176,92 @@ class ListEntryServiceImplTest {
         } catch (InstanceNotFoundException e) {
             Assertions.fail(e.getMessage());
         }
-        Assertions.assertFalse(listEntries.isEmpty());
+        Assertions.assertTrue(!listEntries.isEmpty() && listEntries.size() > 1);
     }
 
     @Test
-    void deleteListEntry() {
+    void deleteOwnListEntryAsUser() {
+        ListEntry listEntry = listEntryRepository.findByUserID(user.getId()).get(0);
+        try {
+            listEntryService.deleteListEntry(listEntry.getId(), user.getUsername());
+        } catch (InstanceNotFoundException | NotTheOwnerException e) {
+            Assertions.fail(e.getMessage());
+        }
+        Assertions.assertFalse(listEntryRepository.findById(listEntry.getId()).isPresent());
     }
+
+    @Test
+    void deleteOtherListEntryAsUser() {
+        ListEntry listEntry = listEntryRepository.findByUserID(admin.getId()).get(0);
+        try {
+            listEntryService.deleteListEntry(listEntry.getId(), user.getUsername());
+            Assertions.fail("deleted without the necessary rights");
+        } catch (InstanceNotFoundException | NotTheOwnerException e) {
+            Assertions.assertTrue(e instanceof NotTheOwnerException);
+        }
+    }
+
+    @Test
+    void deleteOwnListEntryAsAdmin() {
+        ListEntry listEntry = listEntryRepository.findByUserID(admin.getId()).get(0);
+        try {
+            listEntryService.deleteListEntry(listEntry.getId(), admin.getUsername());
+        } catch (InstanceNotFoundException | NotTheOwnerException e) {
+            Assertions.fail(e.getMessage());
+        }
+        Assertions.assertFalse(listEntryRepository.findById(listEntry.getId()).isPresent());
+    }
+
+    @Test
+    void deleteOtherListEntryAsAdmin() {
+        ListEntry listEntry = listEntryRepository.findByUserID(user.getId()).get(0);
+        try {
+            listEntryService.deleteListEntry(listEntry.getId(), admin.getUsername());
+        } catch (InstanceNotFoundException | NotTheOwnerException e) {
+            Assertions.fail(e.getMessage());
+        }
+        Assertions.assertFalse(listEntryRepository.findById(listEntry.getId()).isPresent());
+    }
+
+    @Test
+    void deleteAllOwnListEntryAsUser() {
+        try {
+            listEntryService.deleteAllListEntries(user.getId(), user.getUsername());
+        } catch (InstanceNotFoundException | NotTheOwnerException e) {
+            Assertions.fail(e.getMessage());
+        }
+        Assertions.assertTrue(listEntryRepository.findByUserID(user.getId()).isEmpty());
+    }
+
+    @Test
+    void deleteAllOtherListEntryAsUser() {
+        try {
+            listEntryService.deleteAllListEntries(admin.getId(), user.getUsername());
+            Assertions.fail("deleted without the necessary rights");
+        } catch (InstanceNotFoundException | NotTheOwnerException e) {
+            Assertions.assertTrue(e instanceof NotTheOwnerException);
+        }
+    }
+
+    @Test
+    void deleteAllOwnListEntryAsAdmin() {
+        try {
+            listEntryService.deleteAllListEntries(admin.getId(), admin.getUsername());
+        } catch (InstanceNotFoundException | NotTheOwnerException e) {
+            Assertions.fail(e.getMessage());
+        }
+        Assertions.assertTrue(listEntryRepository.findByUserID(admin.getId()).isEmpty());
+    }
+
+    @Test
+    void deleteAllOtherListEntryAsAdmin() {
+        try {
+            listEntryService.deleteAllListEntries(user.getId(), admin.getUsername());
+            Assertions.assertTrue(listEntryRepository.findByUserID(user.getId()).isEmpty());
+        } catch (InstanceNotFoundException | NotTheOwnerException e) {
+            Assertions.fail(e.getMessage());
+        }
+    }
+
+
 }
