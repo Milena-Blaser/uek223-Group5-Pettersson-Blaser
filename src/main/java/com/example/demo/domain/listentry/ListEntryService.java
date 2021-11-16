@@ -19,7 +19,7 @@ public interface ListEntryService {
 
     ListEntry updateListEntryAsAdmin(ListEntryDTOForUpdateAdmin newListEntry) throws InstanceNotFoundException;
 
-    ListEntryDTOForOutput getListEntry(UUID id, String username) throws InstanceNotFoundException;
+    ListEntryDTOForOutput getListEntry(UUID id) throws InstanceNotFoundException;
 
     List<ListEntryDTOForOutput> getAllListEntries(UUID id) throws InstanceNotFoundException;
 
