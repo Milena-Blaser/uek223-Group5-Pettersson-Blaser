@@ -45,7 +45,7 @@ public class ListEntryController {
         try {
             returnedListEntry = listEntryService.addListEntry(listEntry, decodeCredentials(authHeader)[0]);
         } catch (InstanceNotFoundException e) {
-            log.trace("User was not found");
+            log.error("User was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         }
         return ResponseEntity.ok().body(returnedListEntry);
@@ -67,7 +67,7 @@ public class ListEntryController {
         try {
             returnedList = listEntryService.getAllListEntries(id);
         } catch (InstanceNotFoundException e) {
-            log.trace("User was not found");
+            log.error("User was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         }
         return ResponseEntity.ok().body(returnedList);
@@ -89,7 +89,7 @@ public class ListEntryController {
         try {
             returnedListEntry = Optional.ofNullable(listEntryService.getListEntry(id));
         } catch (InstanceNotFoundException e) {
-            log.trace("ListEntry was not found");
+            log.error("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         }
         return ResponseEntity.ok().body(returnedListEntry);
@@ -114,10 +114,10 @@ public class ListEntryController {
             return ResponseEntity.ok(new ListEntryDTOForOutput(listEntryService.updateListEntryAsUser(inputEntry,
                     decodeCredentials(authorizationHeader)[0])));
         } catch (InstanceNotFoundException e) {
-            log.trace("ListEntry was not found");
+            log.error("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (NotTheOwnerException e) {
-            log.trace("User was not the owner or did not have the authority to execute transaction");
+            log.error("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
         }
     }
@@ -138,7 +138,7 @@ public class ListEntryController {
         try {
             return ResponseEntity.ok(new ListEntryDTOForOutput(listEntryService.updateListEntryAsAdmin(inputEntry)));
         } catch (InstanceNotFoundException e) {
-            log.trace("ListEntry was not found");
+            log.error("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         }
 
@@ -161,10 +161,10 @@ public class ListEntryController {
             listEntryService.deleteListEntry(id, decodeCredentials(authorizationHeader)[0]);
             return ResponseEntity.ok("deleted");
         } catch (InstanceNotFoundException e) {
-            log.trace("ListEntry was not found");
+            log.error("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (NotTheOwnerException e) {
-            log.trace("User was not the owner or did not have the authority to execute transaction");
+            log.error("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
         }
     }
@@ -186,10 +186,10 @@ public class ListEntryController {
             listEntryService.deleteAllListEntries(id, decodeCredentials(authHeader)[0]);
             return ResponseEntity.ok().body("All list entries were deleted");
         } catch (InstanceNotFoundException e) {
-            log.trace("User was not found");
+            log.error("User was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (NotTheOwnerException e) {
-            log.trace("User was not the owner or did not have the authority to execute transaction");
+            log.error("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
         }
     }
