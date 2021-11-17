@@ -61,7 +61,7 @@ public class ListEntryServiceImpl implements ListEntryService {
 
     /**
      * This method is responsible for updating a listEntry as a user and calls the method in the listEntryRepository that
-     * saves the updates to the data base.
+     * saves the updates to the database.
      *
      * @param newListEntry     the information that is needed to update the existing listEntry
      * @param loggedInUsername the username of the currently logged in user
@@ -91,7 +91,7 @@ public class ListEntryServiceImpl implements ListEntryService {
 
     /**
      * This method is responsible for updating a listEntry as an admin and calls the method in the listEntryRepository that
-     * saves the updates to the data base. The user can assign any user to the listEntry.
+     * saves the updates to the database. The user can assign any user to the listEntry.
      *
      * @param newListEntry the information that is needed to update the existing listEntry
      * @return the updated listEntry
@@ -209,8 +209,8 @@ public class ListEntryServiceImpl implements ListEntryService {
                 throw new NotTheOwnerException("You do not own this list of entries and do not have the authority to delete those entries");
             }
         }
-        for (int i = 0; i < listEntries.size(); i++) {
-            listEntryRepository.delete(listEntries.get(i));
+        for (ListEntry listEntry : listEntries) {
+            listEntryRepository.delete(listEntry);
 
         }
     }
