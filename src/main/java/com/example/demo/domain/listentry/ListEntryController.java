@@ -53,6 +53,7 @@ public class ListEntryController {
             log.trace("Admin didn't enter userID");
             return ResponseEntity.status(400).body(e.getMessage());
         } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok().body(returnedListEntry);
@@ -77,6 +78,7 @@ public class ListEntryController {
             log.trace("User was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok().body(returnedList);
@@ -101,6 +103,7 @@ public class ListEntryController {
             log.trace("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok().body(returnedListEntry);
@@ -131,6 +134,7 @@ public class ListEntryController {
             log.trace("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
         } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -154,6 +158,7 @@ public class ListEntryController {
             log.trace("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -182,6 +187,7 @@ public class ListEntryController {
             log.trace("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
         } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -209,6 +215,7 @@ public class ListEntryController {
             log.trace("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
         } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
