@@ -41,13 +41,12 @@ public class ListEntryServiceImpl implements ListEntryService {
      */
     @Override
     public ListEntryDTOForOutput addListEntry(ListEntryDTO listEntry, String username) throws InstanceNotFoundException{
-        Optional<User> optionalUser;
+        User user;
         ListEntry newListEntry;
         if(userService.getUser(username).getRoles().contains(roleService.getRoleByRolename("ADMIN"))) {
-            if ((optionalUser = userService.findById(UUID.fromString(listEntry.getUserID()))).isEmpty()) {
+            if ((user = userService.getUser(listEntry.getUsername())) == null) {
                 throw new InstanceNotFoundException("User does not exist");
             }
-            User user = optionalUser.get();
             newListEntry = listEntryRepository.save(new ListEntry(null, listEntry.getTitle(), listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()), listEntry.getImportance().getNumVal(), user));
             return new ListEntryDTOForOutput(newListEntry);
         }
@@ -97,8 +96,8 @@ public class ListEntryServiceImpl implements ListEntryService {
     @Override
     public ListEntry updateListEntryAsAdmin(ListEntryDTOForUpdateAdmin newListEntry) throws InstanceNotFoundException {
         Optional<ListEntry> oldListEntryOptional;
-        Optional<User> newUser;
-        if ((newUser = userService.findById(UUID.fromString(newListEntry.getUserID()))).isEmpty())
+        User newUser;
+        if ((newUser = userService.getUser(newListEntry.getUsername())) == null)
             throw new InstanceNotFoundException("User to assign entry to doesn't exist");
         if ((oldListEntryOptional = listEntryRepository.findById(UUID.fromString(newListEntry.getId()))).isPresent()) {
             ListEntry oldListEntry = oldListEntryOptional.get();
@@ -106,7 +105,7 @@ public class ListEntryServiceImpl implements ListEntryService {
             oldListEntry.setText(newListEntry.getText());
             oldListEntry.setCreationDate(LocalDate.parse(newListEntry.getCreationDate()));
             oldListEntry.setImportance(newListEntry.getImportance().getNumVal());
-            oldListEntry.setUser(newUser.get());
+            oldListEntry.setUser(newUser);
             return listEntryRepository.save(oldListEntry);
         } else {
             throw new InstanceNotFoundException("List Entry doesn't exist");
@@ -136,14 +135,19 @@ public class ListEntryServiceImpl implements ListEntryService {
     /**
      * This method will get all ListEntries that belong to the given user. Calls the matching method in the listEntryRepository
      * and changes the listEntries into listEntryDTOForOutputs.
-     * @param id the UUID of the user that is being searched for
+     * @param username the username of the user that is being searched for
      * @return the list of all the ListEntries that belong to the user
      * @throws InstanceNotFoundException if the given userID does not exist
      */
     @Override
-    public List<ListEntryDTOForOutput> getAllListEntries(UUID id) throws InstanceNotFoundException {
-        List<ListEntry> listEntries;
-        if (!(listEntries = listEntryRepository.findByUserID(id)).isEmpty()) {
+    public List<ListEntryDTOForOutput> getAllListEntries(String username) throws InstanceNotFoundException {
+        User user = userService.getUser(username);
+        if (user == null) {
+            throw new InstanceNotFoundException("User does not exist");
+
+        }else {
+            List<ListEntry> listEntries;
+            listEntries = listEntryRepository.findByUserID(user.getId());
             List<ListEntryDTOForOutput> listEntryDTOForOutputs = new ArrayList<>();
             for (int i = 0; i < listEntries.size(); i++) {
                 ListEntry listEntry = listEntries.get(i);
@@ -151,8 +155,6 @@ public class ListEntryServiceImpl implements ListEntryService {
                 listEntryDTOForOutputs.add(listEntryDTOForOutput);
             }
             return listEntryDTOForOutputs;
-        } else {
-            throw new InstanceNotFoundException("User does not exist");
         }
 
     }
@@ -184,20 +186,22 @@ public class ListEntryServiceImpl implements ListEntryService {
      * in user has the behaviour changes. If the user is an admin he is allowed to delete all the Entries without
      * having to check if they have the correct authority or if they are the owner of the list.
      *
-     * @param id of the user who's all listEntries need to be deleted
-     * @param username the username of the currently logged in user
+     * @param targetUsername of the user who's all listEntries need to be deleted
+     * @param loggedInUsername the username of the currently logged in user
      * @throws InstanceNotFoundException if the user does not exist
      * @throws NotTheOwnerException      if the logged in user is not the owner of the list and/or has not the authority to
      *                                   delete ListEntries
      */
     @Override
-    public void deleteAllListEntries(UUID id, String username) throws InstanceNotFoundException, NotTheOwnerException {
-        List<ListEntry> listEntries = listEntryRepository.findByUserID(id);
-        if (listEntries.isEmpty()) {
+    public void deleteAllListEntries(String targetUsername, String loggedInUsername) throws InstanceNotFoundException, NotTheOwnerException {
+        User user = userService.getUser(targetUsername);
+        if (user == null) {
             throw new InstanceNotFoundException("User does not exist");
         }
-        if (!userService.getUser(username).getRoles().contains(roleService.getRoleByRolename("ADMIN"))){
-            if (!isOwner(username, listEntries.get(0).getUser().getId()) && !hasCertainAuthority(userService.getUser(username), "DELETE_LIST_ENTRY")) {
+        List<ListEntry> listEntries = listEntryRepository.findByUserID(user.getId());
+
+        if (!userService.getUser(loggedInUsername).getRoles().contains(roleService.getRoleByRolename("ADMIN"))){
+            if (!isOwner(loggedInUsername, listEntries.get(0).getUser().getId()) && !hasCertainAuthority(userService.getUser(loggedInUsername), "DELETE_LIST_ENTRY")) {
                 throw new NotTheOwnerException("You do not own this list of entries and do not have the authority to delete those entries");
             }
         }
