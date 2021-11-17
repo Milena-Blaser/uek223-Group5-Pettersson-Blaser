@@ -52,29 +52,29 @@ class ListEntryServiceImplTest {
                 Importance.NEUTRAL.getNumVal(), admin));
     }
 
-   /* @Test
+    @Test
     void addListEntryAsAdmin() {
-        UUID uuid = admin.getId();
+        ListEntryDTOForOutput listEntryDTOForOutput = null;
         try {
-            listEntryService.addListEntry(new ListEntryDTO(uuid.toString(), "TEST TITLE", "TEST DESC",
+            listEntryDTOForOutput = listEntryService.addListEntry(new ListEntryDTO(admin.getUsername(), "TEST TITLE", "TEST DESC",
                     "2020-11-20", Importance.IMPORTANT), admin.getUsername());
         } catch (InstanceNotFoundException e) {
             Assertions.fail(e.getMessage());
         }
-        Assertions.assertNotNull(listEntryRepository.getById(uuid));
+        Assertions.assertNotNull(listEntryRepository.getById(UUID.fromString(listEntryDTOForOutput.getListEntryID())));
     }
 
     @Test
     void addListEntryAsUser() {
-        UUID uuid = user.getId();
+        ListEntryDTOForOutput listEntryDTOForOutput = null;
         try {
-            listEntryService.addListEntry(new ListEntryDTO(uuid.toString(), "TEST TITLE", "TEST DESC",
+            listEntryDTOForOutput = listEntryService.addListEntry(new ListEntryDTO(user.getUsername(), "TEST TITLE", "TEST DESC",
                     "2020-11-20", Importance.IMPORTANT), user.getUsername());
         } catch (InstanceNotFoundException e) {
             Assertions.fail(e.getMessage());
         }
-        Assertions.assertNotNull(listEntryRepository.getById(uuid));
-    }*/
+        Assertions.assertNotNull(listEntryRepository.getById(UUID.fromString(listEntryDTOForOutput.getListEntryID())));
+    }
 
     @Transactional
     @Test
@@ -115,7 +115,7 @@ class ListEntryServiceImplTest {
     void updateOwnListEntryAsAdmin() {
         ListEntry listEntry = listEntryRepository.findByUserID(admin.getId()).get(0);
         ListEntryDTOForUpdateAdmin updateData = new ListEntryDTOForUpdateAdmin(listEntry.getId().toString(),
-                admin.getId().toString(), "UPDATED TITLE", "UPDATED TEXT", "2021-11-13",
+                admin.getUsername(), "UPDATED TITLE", "UPDATED TEXT", "2021-11-13",
                 Importance.LESS_IMPORTANT);
         try {
             listEntryService.updateListEntryAsAdmin(updateData);
@@ -136,7 +136,7 @@ class ListEntryServiceImplTest {
     void updateOtherListEntryAsAdmin() {
         ListEntry listEntry = listEntryRepository.findByUserID(user.getId()).get(0);
         ListEntryDTOForUpdateAdmin updateData = new ListEntryDTOForUpdateAdmin(listEntry.getId().toString(),
-                admin.getId().toString(), "UPDATED BY ADMIN", "UPDATED TEXT BY ADMIN", "2021-11-23",
+                admin.getUsername(), "UPDATED BY ADMIN", "UPDATED TEXT BY ADMIN", "2021-11-23",
                 Importance.LESS_IMPORTANT);
         try {
             listEntryService.updateListEntryAsAdmin(updateData);
@@ -166,10 +166,6 @@ class ListEntryServiceImplTest {
     @Transactional
     @Test
     void getAllListEntries() {
-        listEntryRepository.save(new ListEntry(null, "TEST TITLE", "TEST DESCRIPTION", LocalDate.now(),
-                Importance.NEUTRAL.getNumVal(), user));
-        listEntryRepository.save(new ListEntry(null, "TEST TITLE 2", "TEST DESCRIPTION 2", LocalDate.now(),
-                Importance.NEUTRAL.getNumVal(), user));
         List<ListEntryDTOForOutput> listEntries = new ArrayList<>();
         try {
             listEntries = listEntryService.getAllListEntries(user.getUsername());
