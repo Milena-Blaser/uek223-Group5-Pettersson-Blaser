@@ -45,7 +45,7 @@ public class ListEntryServiceImpl implements ListEntryService {
         ListEntry newListEntry;
         if(userService.getUser(username).getRoles().contains(roleService.getRoleByRolename("ADMIN"))) {
             try {
-                if ((optionalUser = userService.findById(UUID.fromString(listEntry.getUserID()))).isEmpty()) {
+                if ((user = userService.getUser(listEntry.getUsername())) != null) {
                     throw new InstanceNotFoundException("User does not exist");
                 }
             } catch (NullPointerException e) {
