@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ListEntryService {
-    ListEntryDTOForOutput addListEntry(ListEntryDTO listEntry, String username) throws InstanceNotFoundException;
+    ListEntryDTOForOutput addListEntry(ListEntryDTO listEntry, String username) throws InstanceNotFoundException, NullPointerException;
 
     ListEntry updateListEntryAsUser(ListEntryDTOForUpdateUser newListEntry, String loggedInUsername) throws InstanceNotFoundException, NotTheOwnerException;
 

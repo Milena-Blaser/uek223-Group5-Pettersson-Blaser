@@ -44,8 +44,12 @@ public class ListEntryServiceImpl implements ListEntryService {
         Optional<User> optionalUser;
         ListEntry newListEntry;
         if(userService.getUser(username).getRoles().contains(roleService.getRoleByRolename("ADMIN"))) {
-            if ((optionalUser = userService.findById(UUID.fromString(listEntry.getUserID()))).isEmpty()) {
-                throw new InstanceNotFoundException("User does not exist");
+            try {
+                if ((optionalUser = userService.findById(UUID.fromString(listEntry.getUserID()))).isEmpty()) {
+                    throw new InstanceNotFoundException("User does not exist");
+                }
+            } catch (NullPointerException e) {
+                throw new NullPointerException("UUID can't be null if you're entering as admin");
             }
             User user = optionalUser.get();
             newListEntry = listEntryRepository.save(new ListEntry(null, listEntry.getTitle(), listEntry.getText(), LocalDate.parse(listEntry.getCreationDate()), listEntry.getImportance().getNumVal(), user));

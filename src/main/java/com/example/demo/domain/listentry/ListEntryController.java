@@ -6,6 +6,7 @@ import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
 import com.example.demo.exception.NotTheOwnerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,10 @@ public class ListEntryController {
             returnedListEntry = listEntryService.addListEntry(listEntry, decodeCredentials(authHeader)[0]);
         } catch (InstanceNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
+        } catch (NullPointerException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok().body(returnedListEntry);
     }
@@ -63,6 +68,8 @@ public class ListEntryController {
             returnedList = listEntryService.getAllListEntries(id);
         } catch (InstanceNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok().body(returnedList);
     }
@@ -84,6 +91,8 @@ public class ListEntryController {
             returnedListEntry = Optional.ofNullable(listEntryService.getListEntry(id));
         } catch (InstanceNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok().body(returnedListEntry);
     }
@@ -109,6 +118,8 @@ public class ListEntryController {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (NotTheOwnerException e) {
             return ResponseEntity.status(403).body(e.getMessage());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -128,6 +139,8 @@ public class ListEntryController {
             return ResponseEntity.ok(new ListEntryDTOForOutput(listEntryService.updateListEntryAsAdmin(inputEntry)));
         } catch (InstanceNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -151,6 +164,8 @@ public class ListEntryController {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (NotTheOwnerException e) {
             return ResponseEntity.status(403).body(e.getMessage());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -173,12 +188,15 @@ public class ListEntryController {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (NotTheOwnerException e) {
             return ResponseEntity.status(403).body(e.getMessage());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     /**
      * This method is responsible for decoding the Authorization Header and splitting the decoded String into username
      * and password.
+     *
      * @param authorizationHeader the user information found in the request header under the authorization tag
      * @return the decoded and split into two String array containing the username and the password
      */
