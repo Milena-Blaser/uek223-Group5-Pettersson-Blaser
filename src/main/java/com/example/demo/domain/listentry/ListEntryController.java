@@ -5,6 +5,8 @@ import com.example.demo.domain.listentry.dto.ListEntryDTOForUpdateUser;
 import com.example.demo.domain.listentry.dto.ListEntryDTOForOutput;
 import com.example.demo.exception.NotTheOwnerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +49,12 @@ public class ListEntryController {
         } catch (InstanceNotFoundException e) {
             log.error("User was not found");
             return ResponseEntity.status(404).body(e.getMessage());
+        } catch (NullPointerException e) {
+            log.trace("Admin didn't enter userID");
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok().body(returnedListEntry);
     }
@@ -69,6 +77,9 @@ public class ListEntryController {
         } catch (InstanceNotFoundException e) {
             log.error("User was not found");
             return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok().body(returnedList);
     }
@@ -91,6 +102,9 @@ public class ListEntryController {
         } catch (InstanceNotFoundException e) {
             log.error("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok().body(returnedListEntry);
     }
@@ -119,6 +133,9 @@ public class ListEntryController {
         } catch (NotTheOwnerException e) {
             log.error("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
+        } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -140,6 +157,9 @@ public class ListEntryController {
         } catch (InstanceNotFoundException e) {
             log.error("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -166,6 +186,9 @@ public class ListEntryController {
         } catch (NotTheOwnerException e) {
             log.error("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
+        } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -191,12 +214,16 @@ public class ListEntryController {
         } catch (NotTheOwnerException e) {
             log.error("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
+        } catch (Exception e) {
+            log.trace("Unexpected error: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     /**
      * This method is responsible for decoding the Authorization Header and splitting the decoded String into username
      * and password.
+     *
      * @param authorizationHeader the user information found in the request header under the authorization tag
      * @return the decoded and split into two String array containing the username and the password
      */
