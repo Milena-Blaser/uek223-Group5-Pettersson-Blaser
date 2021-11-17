@@ -52,7 +52,7 @@ class ListEntryServiceImplTest {
                 Importance.NEUTRAL.getNumVal(), admin));
     }
 
-    @Test
+   /* @Test
     void addListEntryAsAdmin() {
         UUID uuid = admin.getId();
         try {
@@ -74,7 +74,7 @@ class ListEntryServiceImplTest {
             Assertions.fail(e.getMessage());
         }
         Assertions.assertNotNull(listEntryRepository.getById(uuid));
-    }
+    }*/
 
     @Transactional
     @Test

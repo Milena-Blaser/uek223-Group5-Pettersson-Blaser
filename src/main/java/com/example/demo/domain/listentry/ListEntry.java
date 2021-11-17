@@ -23,21 +23,22 @@ public class ListEntry {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "text")
+    @Column(name = "text", nullable = false)
     private String text;
 
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", nullable = false)
     private LocalDate creationDate;
 
-    @Column(name = "importance")
+
+    @Column(name = "importance", nullable = false)
     private int importance;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
 
