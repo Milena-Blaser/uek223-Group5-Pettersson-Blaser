@@ -12,6 +12,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.domain.listentry.dto.ListEntryDTO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.management.InstanceNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -21,7 +24,7 @@ import java.util.*;
 public class ListEntryController {
 
     private ListEntryService listEntryService;
-
+    private static final Logger log = LoggerFactory.getLogger(ListEntryServiceImpl.class);
     @Autowired
     public ListEntryController(ListEntryServiceImpl listEntryService) {
         this.listEntryService = listEntryService;
@@ -39,10 +42,12 @@ public class ListEntryController {
      */
     @PostMapping("add")
     public ResponseEntity addListEntry(@RequestBody ListEntryDTO listEntry, @RequestHeader("Authorization") String authHeader) {
+        log.trace("Accessed the AddListEntry Endpoint");
         ListEntryDTOForOutput returnedListEntry = null;
         try {
             returnedListEntry = listEntryService.addListEntry(listEntry, decodeCredentials(authHeader)[0]);
         } catch (InstanceNotFoundException e) {
+            log.trace("User was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (NullPointerException e) {
             return ResponseEntity.status(400).body(e.getMessage());
@@ -63,10 +68,12 @@ public class ListEntryController {
     @GetMapping("{userID}")
     @PreAuthorize("hasAuthority('READ_LIST_ENTRY')")
     public ResponseEntity getAllListEntries(@PathVariable("userID") UUID id) {
+        log.trace("Accessed the getAllListEntries Endpoint");
         List<ListEntryDTOForOutput> returnedList = null;
         try {
             returnedList = listEntryService.getAllListEntries(id);
         } catch (InstanceNotFoundException e) {
+            log.trace("User was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -85,11 +92,12 @@ public class ListEntryController {
     @GetMapping("get/{listEntryID}")
     @PreAuthorize("hasAuthority('READ_LIST_ENTRY')")
     public ResponseEntity getListEntry(@PathVariable("listEntryID") UUID id) {
-
+        log.trace("Accessed the getListEntry Endpoint");
         Optional<ListEntryDTOForOutput> returnedListEntry = null;
         try {
             returnedListEntry = Optional.ofNullable(listEntryService.getListEntry(id));
         } catch (InstanceNotFoundException e) {
+            log.trace("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -111,12 +119,15 @@ public class ListEntryController {
     @PutMapping("update")
     public ResponseEntity updateListEntryAsUser(@RequestBody ListEntryDTOForUpdateUser inputEntry,
                                                 @RequestHeader("Authorization") String authorizationHeader) {
+        log.trace("Accessed the updateListEntryAsUser Endpoint");
         try {
             return ResponseEntity.ok(new ListEntryDTOForOutput(listEntryService.updateListEntryAsUser(inputEntry,
                     decodeCredentials(authorizationHeader)[0])));
         } catch (InstanceNotFoundException e) {
+            log.trace("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (NotTheOwnerException e) {
+            log.trace("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -135,9 +146,11 @@ public class ListEntryController {
     @PutMapping("admin/update")
     @PreAuthorize("hasAuthority('UPDATE_LIST_ENTRY')")
     public ResponseEntity updateListEntryAsAdmin(@RequestBody ListEntryDTOForUpdateAdmin inputEntry) {
+        log.trace("Accessed the updateListEntryAsUser");
         try {
             return ResponseEntity.ok(new ListEntryDTOForOutput(listEntryService.updateListEntryAsAdmin(inputEntry)));
         } catch (InstanceNotFoundException e) {
+            log.trace("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -157,12 +170,15 @@ public class ListEntryController {
     @DeleteMapping("delete/{id}")
     public ResponseEntity deleteListEntry(@PathVariable UUID id,
                                           @RequestHeader("Authorization") String authorizationHeader) {
+        log.trace("Accessed the deleteListEntry Endpoint");
         try {
             listEntryService.deleteListEntry(id, decodeCredentials(authorizationHeader)[0]);
             return ResponseEntity.ok("deleted");
         } catch (InstanceNotFoundException e) {
+            log.trace("ListEntry was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (NotTheOwnerException e) {
+            log.trace("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -181,12 +197,15 @@ public class ListEntryController {
      */
     @DeleteMapping("{id}")
     public ResponseEntity deleteAllListEntries(@PathVariable UUID id, @RequestHeader("Authorization") String authHeader) {
+        log.trace("Accessed the deleteAllEntries Endpoint");
         try {
             listEntryService.deleteAllListEntries(id, decodeCredentials(authHeader)[0]);
             return ResponseEntity.ok().body("All list entries were deleted");
         } catch (InstanceNotFoundException e) {
+            log.trace("User was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (NotTheOwnerException e) {
+            log.trace("User was not the owner or did not have the authority to execute transaction");
             return ResponseEntity.status(403).body(e.getMessage());
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
