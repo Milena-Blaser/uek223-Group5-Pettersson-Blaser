@@ -57,7 +57,7 @@ class ListEntryServiceImplTest {
         UUID uuid = admin.getId();
         try {
             listEntryService.addListEntry(new ListEntryDTO(uuid.toString(), "TEST TITLE", "TEST DESC",
-                    "2020-11-20", Importance.IMPORTANT));
+                    "2020-11-20", Importance.IMPORTANT), admin.getUsername());
         } catch (InstanceNotFoundException e) {
             Assertions.fail(e.getMessage());
         }
@@ -69,7 +69,7 @@ class ListEntryServiceImplTest {
         UUID uuid = user.getId();
         try {
             listEntryService.addListEntry(new ListEntryDTO(uuid.toString(), "TEST TITLE", "TEST DESC",
-                    "2020-11-20", Importance.IMPORTANT));
+                    "2020-11-20", Importance.IMPORTANT), user.getUsername());
         } catch (InstanceNotFoundException e) {
             Assertions.fail(e.getMessage());
         }
@@ -172,7 +172,7 @@ class ListEntryServiceImplTest {
                 Importance.NEUTRAL.getNumVal(), user));
         List<ListEntryDTOForOutput> listEntries = new ArrayList<>();
         try {
-            listEntries = listEntryService.getAllListEntries(user.getId());
+            listEntries = listEntryService.getAllListEntries(user.getUsername());
         } catch (InstanceNotFoundException e) {
             Assertions.fail(e.getMessage());
         }
@@ -226,7 +226,7 @@ class ListEntryServiceImplTest {
     @Test
     void deleteAllOwnListEntryAsUser() {
         try {
-            listEntryService.deleteAllListEntries(user.getId(), user.getUsername());
+            listEntryService.deleteAllListEntries(user.getUsername(), user.getUsername());
         } catch (InstanceNotFoundException | NotTheOwnerException e) {
             Assertions.fail(e.getMessage());
         }
@@ -236,7 +236,7 @@ class ListEntryServiceImplTest {
     @Test
     void deleteAllOtherListEntryAsUser() {
         try {
-            listEntryService.deleteAllListEntries(admin.getId(), user.getUsername());
+            listEntryService.deleteAllListEntries(admin.getUsername(), user.getUsername());
             Assertions.fail("deleted without the necessary rights");
         } catch (InstanceNotFoundException | NotTheOwnerException e) {
             Assertions.assertTrue(e instanceof NotTheOwnerException);
@@ -246,7 +246,7 @@ class ListEntryServiceImplTest {
     @Test
     void deleteAllOwnListEntryAsAdmin() {
         try {
-            listEntryService.deleteAllListEntries(admin.getId(), admin.getUsername());
+            listEntryService.deleteAllListEntries(admin.getUsername(), admin.getUsername());
         } catch (InstanceNotFoundException | NotTheOwnerException e) {
             Assertions.fail(e.getMessage());
         }
@@ -256,7 +256,7 @@ class ListEntryServiceImplTest {
     @Test
     void deleteAllOtherListEntryAsAdmin() {
         try {
-            listEntryService.deleteAllListEntries(user.getId(), admin.getUsername());
+            listEntryService.deleteAllListEntries(user.getUsername(), admin.getUsername());
             Assertions.assertTrue(listEntryRepository.findByUserID(user.getId()).isEmpty());
         } catch (InstanceNotFoundException | NotTheOwnerException e) {
             Assertions.fail(e.getMessage());

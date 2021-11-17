@@ -5,6 +5,8 @@ import com.example.demo.domain.listentry.ListEntry;
 
 public class ListEntryDTOForOutput {
 
+    private String listEntryID;
+
     private String title;
 
     private String text;
@@ -24,6 +26,7 @@ public class ListEntryDTOForOutput {
     }
 
     public ListEntryDTOForOutput(ListEntry listEntry) {
+        this.listEntryID = listEntry.getId().toString();
         this.username = listEntry.getUser().getUsername();
         this.title = listEntry.getTitle();
         this.text = listEntry.getText();
@@ -69,5 +72,13 @@ public class ListEntryDTOForOutput {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getListEntryID() {
+        return listEntryID;
+    }
+
+    public void setListEntryID(String listEntryID) {
+        this.listEntryID = listEntryID;
     }
 }
