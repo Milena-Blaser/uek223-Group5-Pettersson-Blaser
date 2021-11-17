@@ -1,0 +1,2310 @@
+{
+	"info": {
+		"_postman_id": "db0de871-7510-4233-a441-e9070e23efa4",
+		"name": "uek223",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST",
+			"item": [
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "addEntryAsUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var responseJSON = pm.response.json();\r",
+											"pm.collectionVariables.set(\"list_entry_id\", responseJSON.listEntryID);\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"JSON structure is correct\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response).to.have.property(\"title\");\r",
+											"    pm.expect(response).to.have.property(\"text\");\r",
+											"    pm.expect(response).to.have.property(\"creationDate\");\r",
+											"    pm.expect(response).to.have.property(\"importance\");\r",
+											"    pm.expect(response).to.have.property(\"username\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"USER TITLE\",\r\n    \"text\": \"USER TEXT\",\r\n    \"creationDate\": \"2020-11-01\",\r\n    \"importance\": \"IMPORTANT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}add",
+									"host": [
+										"{{base_url}}add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "addEntryForOtherAsUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"JSON structure is correct\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response).to.have.property(\"title\");\r",
+											"    pm.expect(response).to.have.property(\"text\");\r",
+											"    pm.expect(response).to.have.property(\"creationDate\");\r",
+											"    pm.expect(response).to.have.property(\"importance\");\r",
+											"    pm.expect(response).to.have.property(\"username\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Added entry for himsel instead of other\", function() {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response.username).to.eql(pm.variables.get(\"user_username\"));\r",
+											"\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{admin_username}}\",\r\n    \"title\": \"USER TITLE\",\r\n    \"text\": \"USER TEXT\",\r\n    \"creationDate\": \"2020-11-01\",\r\n    \"importance\": \"IMPORTANT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}add",
+									"host": [
+										"{{base_url}}add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "addEntryWithWrongInput",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"text\": \"USER TEXT\",\r\n    \"creationDate\": \"2020-11-01\",\r\n    \"importance\": \"IMPORTANT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}add",
+									"host": [
+										"{{base_url}}add"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "password",
+								"value": "{{user_password}}",
+								"type": "string"
+							},
+							{
+								"key": "username",
+								"value": "{{user_username}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "addEntryForOtherAsAdmin",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"JSON structure is correct\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response).to.have.property(\"listEntryID\");\r",
+											"    pm.expect(response).to.have.property(\"title\");\r",
+											"    pm.expect(response).to.have.property(\"text\");\r",
+											"    pm.expect(response).to.have.property(\"creationDate\");\r",
+											"    pm.expect(response).to.have.property(\"importance\");\r",
+											"    pm.expect(response).to.have.property(\"username\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Added entry for other\", function() {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response.username).to.eql(pm.variables.get(\"user_username\"));\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{user_username}}\",\r\n    \"title\": \"ADMIN TITLE\",\r\n    \"text\": \"ADMIN TEXT\",\r\n    \"creationDate\": \"2020-11-01\",\r\n    \"importance\": \"IMPORTANT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}add",
+									"host": [
+										"{{base_url}}add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "addEntryWithWrongInput",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{user_username}}\",\r\n    \"text\": \"USER TEXT\",\r\n    \"creationDate\": \"2020-11-01\",\r\n    \"importance\": \"IMPORTANT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}add",
+									"host": [
+										"{{base_url}}add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "addEntryWithNonExistingUserID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Body contains error message\", function () {\r",
+											"    pm.expect(pm.response.text()).to.eql(pm.variables.get(\"error_user_not_exist\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"non-existing-user\",\r\n    \"title\": \"ADMIN TITLE\",\r\n    \"text\": \"ADMIN TEXT\",\r\n    \"creationDate\": \"2020-11-01\",\r\n    \"importance\": \"IMPORTANT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}add",
+									"host": [
+										"{{base_url}}add"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "password",
+								"value": "{{admin_password}}",
+								"type": "string"
+							},
+							{
+								"key": "username",
+								"value": "{{admin_username}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Non Registered",
+					"item": [
+						{
+							"name": "NonRegisteredAddSingleEntry",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"USER TITLE\",\r\n    \"text\": \"USER TEXT\",\r\n    \"creationDate\": \"2020-11-01\",\r\n    \"importance\": \"IMPORTANT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}add",
+									"host": [
+										"{{base_url}}add"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "noauth"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "GET",
+			"item": [
+				{
+					"name": "GetSingle",
+					"item": [
+						{
+							"name": "User",
+							"item": [
+								{
+									"name": "getListEntryAsUser",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"JSON structure is correct\", function () {\r",
+													"    var response = pm.response.json();\r",
+													"    pm.expect(response).to.have.property(\"listEntryID\");\r",
+													"    pm.expect(response).to.have.property(\"title\");\r",
+													"    pm.expect(response).to.have.property(\"text\");\r",
+													"    pm.expect(response).to.have.property(\"creationDate\");\r",
+													"    pm.expect(response).to.have.property(\"importance\");\r",
+													"    pm.expect(response).to.have.property(\"username\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}get/{{list_entry_id}}",
+											"host": [
+												"{{base_url}}get"
+											],
+											"path": [
+												"{{list_entry_id}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "getListEntryNonExisting",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", function () {\r",
+													"    pm.response.to.have.status(404);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Body displays error message\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(pm.variables.get(\"error_element_not_exist\"));\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}get/000000000-0000-0000-0000-000000000",
+											"host": [
+												"{{base_url}}get"
+											],
+											"path": [
+												"000000000-0000-0000-0000-000000000"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "password",
+										"value": "{{user_password}}",
+										"type": "string"
+									},
+									{
+										"key": "username",
+										"value": "{{user_username}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Admin",
+							"item": [
+								{
+									"name": "getListEntryAsAdmin",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"JSON structure is correct\", function () {\r",
+													"    var response = pm.response.json();\r",
+													"    pm.expect(response).to.have.property(\"listEntryID\");\r",
+													"    pm.expect(response).to.have.property(\"title\");\r",
+													"    pm.expect(response).to.have.property(\"text\");\r",
+													"    pm.expect(response).to.have.property(\"creationDate\");\r",
+													"    pm.expect(response).to.have.property(\"importance\");\r",
+													"    pm.expect(response).to.have.property(\"username\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}get/{{list_entry_id}}",
+											"host": [
+												"{{base_url}}get"
+											],
+											"path": [
+												"{{list_entry_id}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "getWithInvalidUUID",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}get/0",
+											"host": [
+												"{{base_url}}get"
+											],
+											"path": [
+												"0"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "password",
+										"value": "{{admin_password}}",
+										"type": "string"
+									},
+									{
+										"key": "username",
+										"value": "{{admin_username}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Non Registered",
+							"item": [
+								{
+									"name": "NonRegisteredGetSingleEntry",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 401\", function () {\r",
+													"    pm.response.to.have.status(401);\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}get/{{list_entry_id}}",
+											"host": [
+												"{{base_url}}get"
+											],
+											"path": [
+												"{{list_entry_id}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "noauth"
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "GetAll",
+					"item": [
+						{
+							"name": "User",
+							"item": [
+								{
+									"name": "getAllEntriesAsUser",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"is an Array\", function() { \r",
+													"    pm.expect(pm.response.json()).to.be.an(\"array\").but.not.an(\"object\")\r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}{{admin_username}}",
+											"host": [
+												"{{base_url}}{{admin_username}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "getEntriesOfNonExistingUser",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", function () {\r",
+													"    pm.response.to.have.status(404);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Body displays error message\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(pm.variables.get(\"error_user_not_exist\"));\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}non-existing-user",
+											"host": [
+												"{{base_url}}non-existing-user"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "password",
+										"value": "{{user_password}}",
+										"type": "string"
+									},
+									{
+										"key": "username",
+										"value": "{{user_username}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Admin",
+							"item": [
+								{
+									"name": "getAllEntriesAsAdmin",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"is an Array\", function() { \r",
+													"    pm.expect(pm.response.json()).to.be.an(\"array\").but.not.an(\"object\")\r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}{{user_username}}",
+											"host": [
+												"{{base_url}}{{user_username}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "getEntriesOfNonExistingUser",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", function () {\r",
+													"    pm.response.to.have.status(404);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Body displays error message\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(pm.variables.get(\"error_user_not_exist\"));\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}non-existing-user",
+											"host": [
+												"{{base_url}}non-existing-user"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "password",
+										"value": "{{admin_password}}",
+										"type": "string"
+									},
+									{
+										"key": "username",
+										"value": "{{admin_username}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Non Registered",
+							"item": [
+								{
+									"name": "NonRegisteredGetSingleEntry",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 401\", function () {\r",
+													"    pm.response.to.have.status(401);\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}{{user_username}}",
+											"host": [
+												"{{base_url}}{{user_username}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "noauth"
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "PUT",
+			"item": [
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "updateAsUserLoggedInAsUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"JSON structure is correct\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response).to.have.property(\"title\");\r",
+											"    pm.expect(response).to.have.property(\"text\");\r",
+											"    pm.expect(response).to.have.property(\"creationDate\");\r",
+											"    pm.expect(response).to.have.property(\"importance\");\r",
+											"    pm.expect(response).to.have.property(\"username\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{list_entry_id}}\",\r\n    \"title\": \"NEW TITLE BY USER\",\r\n    \"text\": \"UPDATED TEXT BY USER\",\r\n    \"creationDate\": \"2002-12-11\",\r\n    \"importance\": \"NEUTRAL\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}update",
+									"host": [
+										"{{base_url}}update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateAsAdminLoggedInAsUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {\r",
+											"    pm.response.to.have.status(403);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"error is Forbidden\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response.error).to.eql(\"Forbidden\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"path is /list/admin/update\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response.path).to.eql(\"/list/admin/update\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{list_entry_id}}\",\r\n    \"username\": \"{{admin_username}}\",\r\n    \"title\": \"UPDATED TITLE\",\r\n    \"text\": \"UPDATED TEXT\",\r\n    \"creationDate\": \"2002-12-11\",\r\n    \"importance\": \"NEUTRAL\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}admin/update",
+									"host": [
+										"{{base_url}}admin"
+									],
+									"path": [
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateAsUserWrongImportance",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"error is Bad Request\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response.error).to.eql(\"Bad Request\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"path is /list/update\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response.path).to.eql(\"/list/update\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{list_entry_id}}\",\r\n    \"title\": \"NEW TITLE\",\r\n    \"text\": \"UPDATED TEXT\",\r\n    \"creationDate\": \"2002-12-11\",\r\n    \"importance\": \"NEUTRA\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}update",
+									"host": [
+										"{{base_url}}update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateAsUserWrongInputAttribute",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{list_entry_id}}\",\r\n    \"title\": \"NEW TITLE\",\r\n    \"text\": \"UPDATED TEXT\",\r\n    \"importance\": \"NEUTRAL\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}update",
+									"host": [
+										"{{base_url}}update"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "password",
+								"value": "{{user_password}}",
+								"type": "string"
+							},
+							{
+								"key": "username",
+								"value": "{{user_username}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "updateAsAdminWrongInputAttribute",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"error is Bad Request\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response.error).to.eql(\"Bad Request\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"path is /list/update\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response.path).to.eql(\"/list/update\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{list_entry_id}}\",\r\n    \"title\": \"NEW TITLE\",\r\n    \"text\": \"UPDATED TEXT\",\r\n    \"creationDate\": \"2002-12-11\",\r\n    \"importance\": \"NEUTRA\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}update",
+									"host": [
+										"{{base_url}}update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateAsAdminLoggedInAsAdmin",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"JSON structure is correct\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response).to.have.property(\"title\");\r",
+											"    pm.expect(response).to.have.property(\"text\");\r",
+											"    pm.expect(response).to.have.property(\"creationDate\");\r",
+											"    pm.expect(response).to.have.property(\"importance\");\r",
+											"    pm.expect(response).to.have.property(\"username\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{list_entry_id}}\",\r\n    \"username\": \"{{admin_username}}\",\r\n    \"title\": \"UPDATED TITLE BY ADMIN\",\r\n    \"text\": \"UPDATED TEXT BY ADMIN\",\r\n    \"creationDate\": \"2002-12-11\",\r\n    \"importance\": \"NEUTRAL\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}admin/update",
+									"host": [
+										"{{base_url}}admin"
+									],
+									"path": [
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateAsUserLoggedInAsAdmin",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"JSON structure is correct\", function () {\r",
+											"    var response = pm.response.json();\r",
+											"    pm.expect(response).to.have.property(\"title\");\r",
+											"    pm.expect(response).to.have.property(\"text\");\r",
+											"    pm.expect(response).to.have.property(\"creationDate\");\r",
+											"    pm.expect(response).to.have.property(\"importance\");\r",
+											"    pm.expect(response).to.have.property(\"username\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{list_entry_id}}\",\r\n    \"title\": \"UPDATED TITLE\",\r\n    \"text\": \"UPDATED TEXT\",\r\n    \"creationDate\": \"2002-12-11\",\r\n    \"importance\": \"NEUTRAL\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}update",
+									"host": [
+										"{{base_url}}update"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "password",
+								"value": "{{admin_password}}",
+								"type": "string"
+							},
+							{
+								"key": "username",
+								"value": "{{admin_username}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Non Registered",
+					"item": [
+						{
+							"name": "NonRegisteredUpdateSingleEntry",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{e6408953-69ad-43ac-a178-6f96b8de14d1}}\",\r\n    \"title\": \"NEW TITLE\",\r\n    \"text\": \"UPDATED TEXT\",\r\n    \"creationDate\": \"2002-12-11\",\r\n    \"importance\": \"NEUTRAL\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}update",
+									"host": [
+										"{{base_url}}update"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "noauth"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "DELETE",
+			"item": [
+				{
+					"name": "DeleteSingleEntry",
+					"item": [
+						{
+							"name": "Admin",
+							"item": [
+								{
+									"name": "adminDeleteOwnEntry",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"deleted successfully\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(\"deleted\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}delete/{{list_entry_id}}",
+											"host": [
+												"{{base_url}}delete"
+											],
+											"path": [
+												"{{list_entry_id}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "addEntryAsUserFiller",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var responseJSON = pm.response.json();\r",
+													"pm.collectionVariables.set(\"list_entry_id\", responseJSON.listEntryID);\r",
+													"\r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"JSON structure is correct\", function () {\r",
+													"    var response = pm.response.json();\r",
+													"    pm.expect(response).to.have.property(\"title\");\r",
+													"    pm.expect(response).to.have.property(\"text\");\r",
+													"    pm.expect(response).to.have.property(\"creationDate\");\r",
+													"    pm.expect(response).to.have.property(\"importance\");\r",
+													"    pm.expect(response).to.have.property(\"username\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{user_username}}\",\r\n    \"title\": \"USER TITLE\",\r\n    \"text\": \"USER TEXT\",\r\n    \"creationDate\": \"2020-11-01\",\r\n    \"importance\": \"IMPORTANT\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}add",
+											"host": [
+												"{{base_url}}add"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "adminDeleteOtherEntry",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"deleted successfully\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(\"deleted\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}delete/{{list_entry_id}}",
+											"host": [
+												"{{base_url}}delete"
+											],
+											"path": [
+												"{{list_entry_id}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "password",
+										"value": "{{admin_password}}",
+										"type": "string"
+									},
+									{
+										"key": "username",
+										"value": "{{admin_username}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "User",
+							"item": [
+								{
+									"name": "userDeleteWithInvalidID",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", function () {\r",
+													"    pm.response.to.have.status(404);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"body displays error message\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(\"List Entry doesn't exist\");\r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}delete/00000000-0000-0000-0000-000000000",
+											"host": [
+												"{{base_url}}delete"
+											],
+											"path": [
+												"00000000-0000-0000-0000-000000000"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "addEntryAsFiller Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var responseJSON = pm.response.json();\r",
+													"pm.collectionVariables.set(\"list_entry_id\", responseJSON.listEntryID);\r",
+													"\r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"JSON structure is correct\", function () {\r",
+													"    var response = pm.response.json();\r",
+													"    pm.expect(response).to.have.property(\"title\");\r",
+													"    pm.expect(response).to.have.property(\"text\");\r",
+													"    pm.expect(response).to.have.property(\"creationDate\");\r",
+													"    pm.expect(response).to.have.property(\"importance\");\r",
+													"    pm.expect(response).to.have.property(\"username\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{user_username}}\",\r\n    \"title\": \"USER TITLE\",\r\n    \"text\": \"USER TEXT\",\r\n    \"creationDate\": \"2020-11-01\",\r\n    \"importance\": \"IMPORTANT\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}add",
+											"host": [
+												"{{base_url}}add"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "userDeleteOwnEntry",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"deleted successfully\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(\"deleted\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}delete/{{list_entry_id}}",
+											"host": [
+												"{{base_url}}delete"
+											],
+											"path": [
+												"{{list_entry_id}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "addEntryAsFillerAsAdmin",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var responseJSON = pm.response.json();\r",
+													"pm.collectionVariables.set(\"list_entry_id\", responseJSON.listEntryID);\r",
+													"\r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"JSON structure is correct\", function () {\r",
+													"    var response = pm.response.json();\r",
+													"    pm.expect(response).to.have.property(\"title\");\r",
+													"    pm.expect(response).to.have.property(\"text\");\r",
+													"    pm.expect(response).to.have.property(\"creationDate\");\r",
+													"    pm.expect(response).to.have.property(\"importance\");\r",
+													"    pm.expect(response).to.have.property(\"username\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "password",
+													"value": "adm1n!",
+													"type": "string"
+												},
+												{
+													"key": "username",
+													"value": "admin",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{admin_username}}\",\r\n    \"title\": \"USER TITLE\",\r\n    \"text\": \"USER TEXT\",\r\n    \"creationDate\": \"2020-11-01\",\r\n    \"importance\": \"IMPORTANT\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}add",
+											"host": [
+												"{{base_url}}add"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "userDeleteOtherEntry",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 403\", function () {\r",
+													"    pm.response.to.have.status(403);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"error message displays\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(\"You're not the owner of this entry and you do not have the authority to delete it\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}delete/{{list_entry_id}}",
+											"host": [
+												"{{base_url}}delete"
+											],
+											"path": [
+												"{{list_entry_id}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "password",
+										"value": "{{user_password}}",
+										"type": "string"
+									},
+									{
+										"key": "username",
+										"value": "{{user_username}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Non Registered",
+							"item": [
+								{
+									"name": "NonRegisteredDeleteSingleEntry",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 401\", function () {\r",
+													"    pm.response.to.have.status(401);\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"id\": \"{{e6408953-69ad-43ac-a178-6f96b8de14d1}}\",\r\n    \"title\": \"NEW TITLE\",\r\n    \"text\": \"UPDATED TEXT\",\r\n    \"creationDate\": \"2002-12-11\",\r\n    \"importance\": \"NEUTRAL\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}delete/{{list_entry_id}}",
+											"host": [
+												"{{base_url}}delete"
+											],
+											"path": [
+												"{{list_entry_id}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "noauth"
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "DeleteAllEntries",
+					"item": [
+						{
+							"name": "User",
+							"item": [
+								{
+									"name": "userDeleteOtherListEntries",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 403\", function () {\r",
+													"    pm.response.to.have.status(403);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"error message displays\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(pm.variables.get(\"error_not_the_owner\"));\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}{{admin_username}}",
+											"host": [
+												"{{base_url}}{{admin_username}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "userDeleteOwnEntries",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"deleted successfully\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(\"All list entries were deleted\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}{{user_username}}",
+											"host": [
+												"{{base_url}}{{user_username}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "password",
+										"value": "{{user_password}}",
+										"type": "string"
+									},
+									{
+										"key": "username",
+										"value": "{{user_username}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Admin",
+							"item": [
+								{
+									"name": "adminDeleteFromNonExistingUser",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", function () {\r",
+													"    pm.response.to.have.status(404);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"error message displays\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(pm.variables.get(\"error_user_not_exist\"));\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}non-existing-user",
+											"host": [
+												"{{base_url}}non-existing-user"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "addEntryAsUserFiller",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var responseJSON = pm.response.json();\r",
+													"pm.collectionVariables.set(\"list_entry_id\", responseJSON.listEntryID);\r",
+													"\r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"JSON structure is correct\", function () {\r",
+													"    var response = pm.response.json();\r",
+													"    pm.expect(response).to.have.property(\"title\");\r",
+													"    pm.expect(response).to.have.property(\"text\");\r",
+													"    pm.expect(response).to.have.property(\"creationDate\");\r",
+													"    pm.expect(response).to.have.property(\"importance\");\r",
+													"    pm.expect(response).to.have.property(\"username\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{user_username}}\",\r\n    \"title\": \"USER TITLE\",\r\n    \"text\": \"USER TEXT\",\r\n    \"creationDate\": \"2020-11-01\",\r\n    \"importance\": \"IMPORTANT\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}add",
+											"host": [
+												"{{base_url}}add"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "adminDeleteOtherEntries",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"deleted successfully\", function () {\r",
+													"    pm.expect(pm.response.text()).to.eql(\"All list entries were deleted\");\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}{{user_username}}",
+											"host": [
+												"{{base_url}}{{user_username}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "password",
+										"value": "{{admin_password}}",
+										"type": "string"
+									},
+									{
+										"key": "username",
+										"value": "{{admin_username}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Non Registered",
+							"item": [
+								{
+									"name": "NonRegisteredDeleteAllEntries",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 401\", function () {\r",
+													"    pm.response.to.have.status(401);\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"id\": \"{{e6408953-69ad-43ac-a178-6f96b8de14d1}}\",\r\n    \"title\": \"NEW TITLE\",\r\n    \"text\": \"UPDATED TEXT\",\r\n    \"creationDate\": \"2002-12-11\",\r\n    \"importance\": \"NEUTRAL\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}{{user_username}}",
+											"host": [
+												"{{base_url}}{{user_username}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "noauth"
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "user_username",
+			"value": "james"
+		},
+		{
+			"key": "user_password",
+			"value": "bond"
+		},
+		{
+			"key": "admin_username",
+			"value": "admin"
+		},
+		{
+			"key": "admin_password",
+			"value": "adm1n!"
+		},
+		{
+			"key": "list_entry_id",
+			"value": ""
+		},
+		{
+			"key": "error_user_not_exist",
+			"value": "User does not exist"
+		},
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080/list/"
+		},
+		{
+			"key": "error_element_not_exist",
+			"value": "Element does not exist"
+		},
+		{
+			"key": "error_not_the_owner",
+			"value": "You do not own this list of entries and do not have the authority to delete those entries"
+		}
+	]
+}
