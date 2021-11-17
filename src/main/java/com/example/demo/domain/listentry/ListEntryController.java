@@ -50,6 +50,7 @@ public class ListEntryController {
             log.trace("User was not found");
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (NullPointerException e) {
+            log.trace("Admin didn't enter userID");
             return ResponseEntity.status(400).body(e.getMessage());
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
