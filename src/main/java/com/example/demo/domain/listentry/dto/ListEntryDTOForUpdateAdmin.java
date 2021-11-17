@@ -6,7 +6,7 @@ public class ListEntryDTOForUpdateAdmin {
 
     private String id;
 
-    private String userID;
+    private String username;
 
     private String title;
 
@@ -16,10 +16,10 @@ public class ListEntryDTOForUpdateAdmin {
 
     private Importance importance;
 
-    public ListEntryDTOForUpdateAdmin(String id, String userID, String title, String text,
+    public ListEntryDTOForUpdateAdmin(String id, String username, String title, String text,
                                       String creationDate, Importance importance) {
         this.id = id;
-        this.userID = userID;
+        this.username = username;
         this.title = title;
         this.text = text;
         this.creationDate = creationDate;
@@ -66,11 +66,11 @@ public class ListEntryDTOForUpdateAdmin {
         this.id = id;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

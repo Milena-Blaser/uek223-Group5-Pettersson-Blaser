@@ -56,16 +56,16 @@ public class ListEntryController {
      * method is executed it checks with @PreAuthorize whether the user has the authority to read the list of listEntries.
      * Calls on the matching method in the ListEntryServiceImpl.
      *
-     * @param id the userID of the user who's listEntries should be displayed
+     * @param username the username of the user who's listEntries should be displayed
      * @return either the list of all the listEntries belonging to the user or an error message that user does not exist
      */
-    @GetMapping("{userID}")
+    @GetMapping("{username}")
     @PreAuthorize("hasAuthority('READ_LIST_ENTRY')")
-    public ResponseEntity getAllListEntries(@PathVariable("userID") UUID id) {
+    public ResponseEntity getAllListEntries(@PathVariable("username") String username) {
         log.trace("Accessed the getAllListEntries Endpoint");
         List<ListEntryDTOForOutput> returnedList = null;
         try {
-            returnedList = listEntryService.getAllListEntries(id);
+            returnedList = listEntryService.getAllListEntries(username);
         } catch (InstanceNotFoundException e) {
             log.trace("User was not found");
             return ResponseEntity.status(404).body(e.getMessage());
@@ -173,17 +173,17 @@ public class ListEntryController {
      * This is the Endpoint that is responsible for deleting all the existing ListEntries of one specific user.
      * Calls on the matching method in the ListEntryServiceImpl.
      *
-     * @param id         is the userID of the user who's listEntries should be deleted
+     * @param username         is the userID of the user who's listEntries should be deleted
      * @param authHeader the requestHeader returns the username and the password of the currently logged in user which
      *                   needs to be decoded first so that the username can be used in the method in the listEntryServiceImpl
      * @return either a String that confirms that listEntries have been deleted or the error messages that either the user
      * does not exist or the list does not belong to the currently logged in user
      */
-    @DeleteMapping("{id}")
-    public ResponseEntity deleteAllListEntries(@PathVariable UUID id, @RequestHeader("Authorization") String authHeader) {
+    @DeleteMapping("{username}")
+    public ResponseEntity deleteAllListEntries(@PathVariable("username") String username, @RequestHeader("Authorization") String authHeader) {
         log.trace("Accessed the deleteAllEntries Endpoint");
         try {
-            listEntryService.deleteAllListEntries(id, decodeCredentials(authHeader)[0]);
+            listEntryService.deleteAllListEntries(username, decodeCredentials(authHeader)[0]);
             return ResponseEntity.ok().body("All list entries were deleted");
         } catch (InstanceNotFoundException e) {
             log.trace("User was not found");

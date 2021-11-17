@@ -13,7 +13,7 @@ import java.util.UUID;
 
 
 public class ListEntryDTO {
-    private String userID;
+    private String username;
 
     private String title;
 
@@ -24,8 +24,8 @@ public class ListEntryDTO {
     private Importance importance;
 
 
-    public ListEntryDTO(String userID, String title, String text, String creationDate, Importance importance) {
-        this.userID = userID;
+    public ListEntryDTO(String username, String title, String text, String creationDate, Importance importance) {
+        this.username = username;
         this.title = title;
         this.text = text;
         this.creationDate = creationDate;
@@ -33,12 +33,12 @@ public class ListEntryDTO {
     }
 
 
-    public String getUserID() {
-        return userID;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUsername(String userID) {
+        this.username = userID;
     }
 
     public String getTitle() {
