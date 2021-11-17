@@ -11,6 +11,8 @@ import com.example.demo.domain.role.RoleServiceImpl;
 import com.example.demo.exception.NotTheOwnerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.time.LocalDate;
@@ -40,6 +42,7 @@ public class ListEntryServiceImpl implements ListEntryService {
      * @throws InstanceNotFoundException if the UserID does not match an existing User
      */
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ListEntryDTOForOutput addListEntry(ListEntryDTO listEntry, String username) throws InstanceNotFoundException{
         User user;
         ListEntry newListEntry;
@@ -71,6 +74,7 @@ public class ListEntryServiceImpl implements ListEntryService {
      *                                   not have the authority to update listEntries
      */
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = {NotTheOwnerException.class})
     public ListEntry updateListEntryAsUser(ListEntryDTOForUpdateUser newListEntry,
                                            String loggedInUsername) throws InstanceNotFoundException, NotTheOwnerException {
         Optional<ListEntry> oldListEntryOptional;
@@ -98,6 +102,7 @@ public class ListEntryServiceImpl implements ListEntryService {
      * @throws InstanceNotFoundException is thrown when the listEntry that needs to be updated is non existing
      */
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ListEntry updateListEntryAsAdmin(ListEntryDTOForUpdateAdmin newListEntry) throws InstanceNotFoundException {
         Optional<ListEntry> oldListEntryOptional;
         User newUser;
@@ -125,6 +130,7 @@ public class ListEntryServiceImpl implements ListEntryService {
      * @throws InstanceNotFoundException if the given ID does not match an existing ListEntry
      */
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ListEntryDTOForOutput getListEntry(UUID id) throws InstanceNotFoundException {
         Optional<ListEntry> optionalListEntry;
 
@@ -144,6 +150,7 @@ public class ListEntryServiceImpl implements ListEntryService {
      * @throws InstanceNotFoundException if the given userID does not exist
      */
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<ListEntryDTOForOutput> getAllListEntries(String username) throws InstanceNotFoundException {
         User user = userService.getUser(username);
         if (user == null) {
@@ -174,6 +181,7 @@ public class ListEntryServiceImpl implements ListEntryService {
      */
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteListEntry(UUID id, String username) throws InstanceNotFoundException, NotTheOwnerException {
         Optional<ListEntry> optionalListEntry = listEntryRepository.findById(id);
         if (optionalListEntry.isEmpty())
@@ -197,6 +205,7 @@ public class ListEntryServiceImpl implements ListEntryService {
      *                                   delete ListEntries
      */
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteAllListEntries(String targetUsername, String loggedInUsername) throws InstanceNotFoundException, NotTheOwnerException {
         User user = userService.getUser(targetUsername);
         if (user == null) {
